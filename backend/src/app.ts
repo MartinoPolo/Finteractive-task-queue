@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { rateLimiter } from './middleware/rateLimiter.js';
 import taskRoutes from './routes/task.routes.js';
 
 export function createApp() {
@@ -18,6 +19,8 @@ export function createApp() {
 	);
 
 	app.use(express.json());
+
+	app.use('/api/', rateLimiter);
 
 	app.use('/api/', taskRoutes);
 
