@@ -163,6 +163,14 @@ export const stopProcessing = (): void => {
 	}
 };
 
+export const isProcessing = (): boolean => {
+	return processingIntervalId !== null;
+};
+
+export const getCurrentProcessingTaskId = (): string | null => {
+	return currentProcessingTaskId;
+};
+
 export const configure = (newConfig: Partial<QueueServiceConfig>): void => {
 	config = { ...config, ...newConfig };
 };

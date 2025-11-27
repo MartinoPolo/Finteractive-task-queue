@@ -36,6 +36,53 @@ io.on('connection', (socket) => {
 	});
 });
 
+// Graceful shutdown handler
+let isShuttingDown = false;
+const gracefulShutdown = (signal: string) => {
+	if (isShuttingDown) {
+		return;
+	}
+	isShuttingDown = true;
+
+	console.log(`\nGraceful shutdown initiated (${signal})...`);
+
+	queueService.stopProcessing();
+	console.log('Queue processing stopped');
+
+	io.emit('server_shutdown', { message: 'Server is shutting down' });
+	console.log('Shutdown message sent to clients');
+
+	// Force close after 10 seconds
+	const forceCloseTimeout = setTimeout(() => {
+		console.log('Force closing...');
+		process.exit(1);
+	}, 10000);
+
+	// Give clients time to receive the message, then close connections
+	setTimeout(() => {
+		// Close Socket.IO connections
+		void io.close().then(() => {
+			console.log('Socket.IO connections closed');
+
+			// Close HTTP server
+			httpServer.close(() => {
+				console.log('HTTP server closed');
+				clearTimeout(forceCloseTimeout);
+				process.exit(0);
+			});
+		});
+	}, 500);
+};
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle Windows-specific close event
+if (process.platform === 'win32') {
+	process.on('SIGHUP', () => gracefulShutdown('SIGHUP'));
+}
+
 httpServer.listen(port, () => {
 	console.log(`Server running on http://localhost:${port}`);
 	console.log(`Socket.IO server running on ws://localhost:${port}`);
