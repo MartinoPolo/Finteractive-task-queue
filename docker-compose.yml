@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: ./backend
+    container_name: task-queue-backend
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/.env:/app/.env
+    restart: unless-stopped

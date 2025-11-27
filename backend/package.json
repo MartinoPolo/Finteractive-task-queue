@@ -8,10 +8,14 @@
 	"scripts": {
 		"dev": "tsx watch --env-file=.env src/index.ts",
 		"build": "tsc",
+		"start": "node dist/index.js",
 		"lint": "eslint src/**/*.ts",
 		"test": "vitest",
 		"test:run": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"docker:build": "docker build -t task-queue-backend .",
+		"docker:up": "docker compose -f ../docker-compose.yml up --build",
+		"docker:down": "docker compose -f ../docker-compose.yml down"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
