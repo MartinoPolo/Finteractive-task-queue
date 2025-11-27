@@ -42,7 +42,8 @@ export default ts.config(
 			parserOptions: {
 				projectService: true,
 				// Allow linting of config files not in tsconfig
-				allowDefaultProject: ['*.config.js', '*.config.ts']
+				allowDefaultProject: ['*.config.js', '*.config.ts'],
+				tsconfigRootDir: import.meta.dirname
 			}
 		},
 		rules: {

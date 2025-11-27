@@ -5,7 +5,7 @@ import { createTaskSchema, type Task } from '../models/task.model';
  * GET /api/tasks
  * Get all tasks in the queue sorted by priority
  */
-export const getTasks = (req: Request, res: Response) => {
+export const getTasks = (_req: Request, res: Response) => {
 	try {
 		// const tasks = queueService.getTasks()
 		const tasks: Task[] = []; // TODO: implement
