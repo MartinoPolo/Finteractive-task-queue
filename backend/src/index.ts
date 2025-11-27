@@ -3,7 +3,7 @@ import { Server } from 'socket.io';
 import { createApp } from './app.js';
 import * as queueService from './services/queue.service.js';
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3000;
 
 const app = createApp();
 
@@ -11,7 +11,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
 	cors: {
-		origin: ['http://localhost:5173'],
+		origin: ['http://localhost:5173', 'http://localhost:3001', 'http://127.0.0.1:5173'],
 		methods: ['GET', 'POST'],
 		credentials: true
 	}
