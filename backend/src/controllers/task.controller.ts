@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { createTaskSchema, Task } from '../models/task.model';
+import type { Request, Response } from 'express';
+import { createTaskSchema, type Task } from '../models/task.model';
 
 /**
  * GET /api/tasks
@@ -66,7 +66,7 @@ export const addTask = (req: Request, res: Response) => {
  * GET /api/tasks/completed
  * Get all completed tasks
  */
-export const getCompletedTasks = (req: Request, res: Response) => {
+export const getCompletedTasks = (_req: Request, res: Response) => {
 	try {
 		// const completedTasks = queueService.getCompletedTasks();
 		const completedTasks: Task[] = []; // TODO: implement
@@ -87,7 +87,7 @@ export const getCompletedTasks = (req: Request, res: Response) => {
  * DELETE /api/tasks/completed
  * Clear all completed tasks
  */
-export const clearCompletedTasks = (req: Request, res: Response) => {
+export const clearCompletedTasks = (_req: Request, res: Response) => {
 	try {
 		// queueService.clearCompletedTasks();
 		// TODO implement
