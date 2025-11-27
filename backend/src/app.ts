@@ -8,9 +8,7 @@ export function createApp() {
 	app.use(
 		cors({
 			origin: [
-				'http://localhost:5173', // Vite default
-				'http://localhost:3001', // Alternative
-				'http://127.0.0.1:5173' // Same as localhost
+				'http://localhost:5173' // Vite default
 			],
 			methods: ['GET', 'POST', 'DELETE'],
 			credentials: true
