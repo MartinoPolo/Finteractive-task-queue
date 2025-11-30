@@ -1,8 +1,11 @@
 import prettier from 'eslint-config-prettier';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 
-export default ts.config(
+export default defineConfig(
 	...ts.configs.recommended,
 	prettier,
 	{
@@ -90,6 +93,19 @@ export default ts.config(
 			'@typescript-eslint/no-import-type-side-effects': 'warn',
 			// Warn about duplicate types in unions/intersections
 			'@typescript-eslint/no-duplicate-type-constituents': 'warn'
+		}
+	},
+	// React-specific rules (only for frontend files)
+	{
+		name: 'react-rules',
+		files: ['frontend/src/**/*.{ts,tsx}'],
+		plugins: {
+			'react-hooks': reactHooks,
+			'react-refresh': reactRefresh
+		},
+		rules: {
+			...reactHooks.configs.recommended.rules,
+			'react-refresh/only-export-components': ['warn', { allowConstantExport: true }]
 		}
 	}
 );

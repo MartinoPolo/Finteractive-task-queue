@@ -1,5 +1,5 @@
 {
-	"name": "martinuv-prioritni-backend",
+	"name": "backend",
 	"version": "1.0.0",
 	"description": "Priority Queue Simulation Backend - Express with WebSocket",
 	"author": "Martin",
