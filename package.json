@@ -18,7 +18,10 @@
 		"test:frontend": "yarn workspace frontend test:unit",
 		"lint": "yarn workspace backend lint && yarn workspace frontend lint",
 		"lint:backend": "yarn workspace backend lint",
-		"lint:frontend": "yarn workspace frontend lint"
+		"lint:frontend": "yarn workspace frontend lint",
+		"typecheck": "yarn workspace backend typecheck && yarn workspace frontend typecheck",
+		"typecheck:backend": "yarn workspace backend typecheck",
+		"typecheck:frontend": "yarn workspace frontend typecheck"
 	},
 	"devDependencies": {
 		"concurrently": "^9.1.2",

@@ -10,6 +10,7 @@
 		"build": "tsc",
 		"start": "node dist/index.js",
 		"lint": "eslint src/**/*.ts",
+		"typecheck": "tsc --noEmit",
 		"test:unit": "vitest run",
 		"docker:build": "docker build -t task-queue-backend .",
 		"docker:up": "docker compose -f ../docker-compose.yml up --build",
