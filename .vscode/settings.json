@@ -20,7 +20,7 @@
 		"titleBar.inactiveForeground": "#e7e7e799"
 	},
 	"peacock.color": "#ff3d00",
-	"cSpell.words": ["Finteractive", "Stylesheet", "uuidv"],
+	"cSpell.words": ["Finteractive", "reduxjs", "Stylesheet", "supertest", "uuidv", "Vitest"],
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
