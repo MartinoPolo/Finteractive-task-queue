@@ -21,7 +21,10 @@
 		"lint:frontend": "yarn workspace frontend lint",
 		"typecheck": "yarn workspace backend typecheck && yarn workspace frontend typecheck",
 		"typecheck:backend": "yarn workspace backend typecheck",
-		"typecheck:frontend": "yarn workspace frontend typecheck"
+		"typecheck:frontend": "yarn workspace frontend typecheck",
+		"docker": "docker-compose up",
+		"docker:build": "docker-compose up --build",
+		"docker:down": "docker-compose down"
 	},
 	"devDependencies": {
 		"concurrently": "^9.1.2",

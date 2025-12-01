@@ -12,7 +12,8 @@
 		"lint": "eslint src/**/*.{ts,tsx}",
 		"typecheck": "tsc --noEmit",
 		"test:unit": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"docker": "docker build -t task-queue-frontend . && docker run -p 5173:5173 task-queue-frontend"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",

@@ -8,3 +8,14 @@ services:
       - ./backend/src:/app/src
       - ./backend/.env:/app/.env
     restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: task-queue-frontend
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+    restart: unless-stopped
