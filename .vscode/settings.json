@@ -20,7 +20,15 @@
 		"titleBar.inactiveForeground": "#e7e7e799"
 	},
 	"peacock.color": "#ff3d00",
-	"cSpell.words": ["Finteractive", "reduxjs", "Stylesheet", "supertest", "uuidv", "Vitest"],
+	"cSpell.words": [
+		"Finteractive",
+		"reduxjs",
+		"retryable",
+		"Stylesheet",
+		"supertest",
+		"uuidv",
+		"Vitest"
+	],
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
@@ -35,5 +43,6 @@
 	"editor.detectIndentation": false,
 	"editor.rulers": [100],
 	"editor.wordWrap": "bounded",
-	"editor.wordWrapColumn": 100
+	"editor.wordWrapColumn": 100,
+	"postman.settings.dotenv-detection-notification-visibility": false
 }

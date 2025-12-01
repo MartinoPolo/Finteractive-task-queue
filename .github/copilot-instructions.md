@@ -33,6 +33,11 @@ Full-stack TypeScript priority queue simulation with real-time WebSocket communi
 - Use **@testing-library/react** for React component tests
 - Use **supertest** for API endpoint tests
 
+## Code Style
+
+- **Do NOT create barrel `index.ts` files** for re-exporting modules
+- Import directly from specific files (e.g., `import { Task } from '../types/task'` instead of `import { Task } from '../types'`)
+
 ## Commands
 
 ```bash

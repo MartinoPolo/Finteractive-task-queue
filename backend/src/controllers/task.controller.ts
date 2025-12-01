@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createTaskSchema } from '../models/task.model';
+import { addTaskSchema } from '../models/task.model';
 import * as queueService from '../services/queue.service.js';
 
 /**
@@ -29,7 +29,7 @@ export const getTasks = (_req: Request, res: Response) => {
  */
 export const addTask = (req: Request, res: Response) => {
 	try {
-		const result = createTaskSchema.safeParse(req.body);
+		const result = addTaskSchema.safeParse(req.body);
 
 		if (!result.success) {
 			res.status(400).json({

@@ -1,7 +1,7 @@
 import type { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import type { QueueState } from '../models/queue.model';
-import type { CompletedTask, CreateTaskInput, Task } from '../models/task.model';
+import type { AddTaskInput, CompletedTask, Task } from '../models/task.model';
 
 let io: Server | null = null;
 let tasks: Task[] = [];
@@ -69,7 +69,7 @@ export const getCurrentTask = (): Task | null => {
 	return sorted[0] ?? null;
 };
 
-export const addTask = (input: CreateTaskInput): Task => {
+export const addTask = (input: AddTaskInput): Task => {
 	const task: Task = {
 		id: uuidv4(), // v4 random uuid
 		name: input.name,

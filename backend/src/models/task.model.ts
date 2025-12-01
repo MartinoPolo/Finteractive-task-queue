@@ -12,7 +12,7 @@ export interface CompletedTask extends Task {
 	completedAt: Date;
 }
 
-export const createTaskSchema = z.object({
+export const addTaskSchema = z.object({
 	name: z.string().trim().min(1, 'Task name must be a non-empty string'),
 	priority: z
 		.number()
@@ -21,4 +21,4 @@ export const createTaskSchema = z.object({
 		.max(10, 'Priority must be at most 10')
 });
 
-export type CreateTaskInput = z.infer<typeof createTaskSchema>;
+export type AddTaskInput = z.infer<typeof addTaskSchema>;
