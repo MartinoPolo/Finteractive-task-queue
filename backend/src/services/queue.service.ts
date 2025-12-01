@@ -78,8 +78,15 @@ export const addTask = (input: AddTaskInput): Task => {
 		createdAt: new Date()
 	};
 
+	const wasEmpty = tasks.length === 0;
 	tasks.push(task);
 	broadcast.taskAdded(task);
+
+	// If queue was empty, this task becomes current - broadcast full state update
+	if (wasEmpty) {
+		currentProcessingTaskId = task.id;
+		broadcast.queueUpdate(getQueueState());
+	}
 
 	return task;
 };
@@ -140,9 +147,8 @@ const processCurrentTask = (): void => {
 		completedTasks.push(completedTask);
 		currentProcessingTaskId = null;
 		broadcast.taskCompleted(completedTask);
+		broadcast.queueUpdate(getQueueState());
 	}
-
-	broadcast.queueUpdate(getQueueState());
 };
 
 export const startProcessing = (): void => {
