@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/tool
 import api from '../../services/api';
 import type { ConnectionStatus } from '../../types/socket';
 import type { AddTaskInput, CompletedTask, QueueState, Task } from '../../types/task';
+import { getUserFriendlyErrorMessage } from '../../utils/errorMessages';
 
 export interface TasksState {
 	queue: Task[];
@@ -43,7 +44,7 @@ export const createTask = createAsyncThunk(
 			const task = await api.addTask(input);
 			return task;
 		} catch (error) {
-			const message = error instanceof Error ? error.message : 'Failed to create task';
+			const message = getUserFriendlyErrorMessage(error, 'createTask');
 			return rejectWithValue(message);
 		}
 	}
@@ -58,7 +59,7 @@ export const clearCompletedTasks = createAsyncThunk(
 		try {
 			await api.clearCompletedTasks();
 		} catch (error) {
-			const message = error instanceof Error ? error.message : 'Failed to clear completed tasks';
+			const message = getUserFriendlyErrorMessage(error, 'clearCompleted');
 			return rejectWithValue(message);
 		}
 	}

@@ -10,6 +10,7 @@ import {
 } from '../features/tasks/tasksSlice';
 import { useAppDispatch } from '../store/hooks';
 import type { ClientToServerEvents, ServerToClientEvents } from '../types/socket';
+import { OPERATION_ERROR_MESSAGES } from '../utils/errorMessages';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
 
@@ -61,8 +62,8 @@ export function useSocket(): void {
 			dispatch(
 				setError(
 					reconnectAttemptsRef.current >= SOCKET_CONFIG.reconnectionAttempts
-						? 'Max reconnection attempts reached. Please refresh the page.'
-						: `Connection error: ${error.message}`
+						? OPERATION_ERROR_MESSAGES.socketMaxRetries
+						: OPERATION_ERROR_MESSAGES.socketConnection
 				)
 			);
 		});
