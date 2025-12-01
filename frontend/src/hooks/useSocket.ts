@@ -86,7 +86,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('queue_update', (state) => {
-			logger.ws('←', 'queue_update', { tasks: state.tasks?.length });
+			logger.ws('←', 'queue_update', { tasks: state.tasks.length });
 			const validatedPayload = validateSocketPayload(queueStateSchema, state, 'queue_update');
 			if (validatedPayload) {
 				dispatch(syncQueueState(validatedPayload));
@@ -94,7 +94,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('task_progress', (task) => {
-			logger.ws('←', 'task_progress', { id: task.id?.slice(0, 8), progress: task.progress });
+			logger.ws('←', 'task_progress', { id: task.id.slice(0, 8), progress: task.progress });
 			const validatedPayload = validateSocketPayload(
 				taskProgressUpdateSchema,
 				task,
@@ -108,7 +108,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('task_completed', (task) => {
-			logger.ws('←', 'task_completed', { id: task.id?.slice(0, 8), name: task.name });
+			logger.ws('←', 'task_completed', { id: task.id.slice(0, 8), name: task.name });
 			const validatedPayload = validateSocketPayload(completedTaskSchema, task, 'task_completed');
 			if (validatedPayload) {
 				dispatch(completeTask(validatedPayload));
@@ -117,7 +117,7 @@ export function useSocket(): void {
 
 		socket.on('task_added', (task) => {
 			logger.ws('←', 'task_added', {
-				id: task.id?.slice(0, 8),
+				id: task.id.slice(0, 8),
 				name: task.name,
 				priority: task.priority
 			});
