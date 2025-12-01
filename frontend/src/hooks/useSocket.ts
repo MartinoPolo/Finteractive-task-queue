@@ -25,10 +25,6 @@ const SOCKET_CONFIG = {
 	autoConnect: false
 } as const;
 
-/**
- * Hook for managing Socket.IO connection and real-time updates.
- * Initializes connection on mount, cleans up on unmount.
- */
 export function useSocket(): void {
 	const dispatch = useAppDispatch();
 	const socketRef = useRef<TypedSocket | null>(null);
@@ -38,7 +34,6 @@ export function useSocket(): void {
 		const socket = io(WS_URL, SOCKET_CONFIG) as TypedSocket;
 		socketRef.current = socket;
 
-		// Connection events
 		socket.on('connect', () => {
 			console.log('Socket connected:', socket.id);
 			reconnectAttemptsRef.current = 0;
@@ -68,7 +63,6 @@ export function useSocket(): void {
 			);
 		});
 
-		// Application events
 		socket.on('queue_update', (state) => dispatch(syncQueueState(state)));
 		socket.on('task_progress', (task) =>
 			dispatch(updateTaskProgress({ id: task.id, progress: task.progress }))
@@ -81,11 +75,9 @@ export function useSocket(): void {
 			dispatch(setConnectionStatus('disconnected'));
 		});
 
-		// Connect
 		dispatch(setConnectionStatus('connecting'));
 		socket.connect();
 
-		// Cleanup
 		return () => {
 			socket.removeAllListeners();
 			socket.disconnect();

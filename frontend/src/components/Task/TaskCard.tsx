@@ -12,9 +12,6 @@ interface TaskCardProps {
 	status?: TaskStatus;
 }
 
-/**
- * Format date to readable string (e.g., "Dec 1, 2:30:45 PM")
- */
 function formatDate(dateString: string): string {
 	const date = new Date(dateString);
 	return date.toLocaleString('en-US', {
@@ -26,9 +23,6 @@ function formatDate(dateString: string): string {
 	});
 }
 
-/**
- * Get progress bar color based on task status
- */
 function getProgressBarColor(status: TaskStatus): string {
 	switch (status) {
 		case 'completed':

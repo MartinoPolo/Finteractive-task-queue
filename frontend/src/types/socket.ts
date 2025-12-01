@@ -1,5 +1,3 @@
-// WebSocket event types matching backend Socket.IO events
-
 import type { CompletedTask, QueueState, Task } from './task';
 
 export interface ClientToServerEvents {

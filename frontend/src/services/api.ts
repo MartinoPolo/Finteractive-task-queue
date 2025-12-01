@@ -134,7 +134,6 @@ async function fetchWithRetry<T>(
 	throw lastError ?? new Error('Unknown error');
 }
 
-// API methods
 export const api = {
 	/**
 	 * GET /api/tasks - Get all tasks in queue

@@ -61,10 +61,9 @@ export const getCurrentTask = (): Task | null => {
 		if (currentTask) {
 			return currentTask;
 		}
-		// Task was removed or completed, clear the tracking
 		currentProcessingTaskId = null;
 	}
-	// Pick the highest priority task
+
 	const sorted = getSortedTasks();
 	return sorted[0] ?? null;
 };
@@ -160,7 +159,6 @@ export const startProcessing = (): void => {
 	console.log(`Task processing started (interval: ${config.processingInterval}ms)`);
 };
 
-// For testing ? Maybe not needed
 export const stopProcessing = (): void => {
 	if (processingIntervalId) {
 		clearInterval(processingIntervalId);

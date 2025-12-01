@@ -1,8 +1,5 @@
 import { createTheme, type ThemeOptions } from '@mui/material';
 
-/**
- * Consolidated color palette for the application
- */
 export const colors = {
 	// Primary brand colors
 	primary: {
@@ -63,9 +60,6 @@ export const colors = {
 	}
 } as const;
 
-/**
- * Common border radius values
- */
 export const borderRadius = {
 	none: 0,
 	sm: 4,
@@ -75,9 +69,6 @@ export const borderRadius = {
 	full: 9999
 } as const;
 
-/**
- * Common spacing values (in theme spacing units)
- */
 export const spacing = {
 	xs: 1,
 	sm: 2,
@@ -86,9 +77,6 @@ export const spacing = {
 	xl: 6
 } as const;
 
-/**
- * Theme options configuration
- */
 const themeOptions: ThemeOptions = {
 	palette: {
 		mode: 'light',
@@ -228,9 +216,6 @@ const themeOptions: ThemeOptions = {
 
 export const theme = createTheme(themeOptions);
 
-/**
- * Helper function to get priority color
- */
 export function getPriorityColor(priority: number): string {
 	if (priority >= 8) {
 		return colors.priority.critical;
@@ -244,9 +229,6 @@ export function getPriorityColor(priority: number): string {
 	return colors.priority.low;
 }
 
-/**
- * Helper function to get priority label
- */
 export function getPriorityLabel(priority: number): string {
 	if (priority >= 8) {
 		return 'Critical';
@@ -260,9 +242,6 @@ export function getPriorityLabel(priority: number): string {
 	return 'Low';
 }
 
-/**
- * Helper function to get connection status config
- */
 export function getConnectionStatusConfig(
 	status: 'connected' | 'connecting' | 'disconnected' | 'error'
 ) {
@@ -275,9 +254,6 @@ export function getConnectionStatusConfig(
 	return configs[status];
 }
 
-/**
- * Common keyframe animations
- */
 export const animations = {
 	pulse: {
 		'@keyframes pulse': {

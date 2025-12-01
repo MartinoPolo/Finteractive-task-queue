@@ -24,7 +24,6 @@ const initialState: TasksState = {
 	connectionStatus: 'disconnected'
 };
 
-// Helper to determine current task ID from queue state
 const resolveCurrentTaskId = (tasks: Task[], currentTaskId: string | null): string | null => {
 	if (currentTaskId && tasks.some((t) => t.id === currentTaskId)) {
 		return currentTaskId;
@@ -151,12 +150,8 @@ export const {
 
 export default tasksSlice.reducer;
 
-// ============================================================================
-// Selectors
-// ============================================================================
 import type { RootState } from '../../store/store';
 
-// Base selectors
 export const selectQueue = (state: RootState) => state.tasks.queue;
 export const selectCompleted = (state: RootState) => state.tasks.completed;
 export const selectCurrentTaskId = (state: RootState) => state.tasks.currentTaskId;

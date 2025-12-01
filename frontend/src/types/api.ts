@@ -1,5 +1,3 @@
-// API response types matching backend controller responses
-
 import type { CompletedTask, QueueState, Task } from './task';
 
 export interface ApiResponse<T> {

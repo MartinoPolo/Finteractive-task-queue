@@ -31,9 +31,6 @@ function getStatusLabel(status: TaskStatus): string {
 	}
 }
 
-/**
- * Badge component for displaying task status (pending, processing, completed)
- */
 export const StatusBadge = memo(function StatusBadge({ status }: StatusBadgeProps) {
 	const color = getStatusColor(status);
 	const label = getStatusLabel(status);

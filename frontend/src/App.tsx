@@ -8,7 +8,6 @@ import { TaskForm } from './components/Task/TaskForm';
 import { useSocket } from './hooks/useSocket';
 
 function App() {
-	// Initialize socket connection
 	useSocket();
 
 	return (

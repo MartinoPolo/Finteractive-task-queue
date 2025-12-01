@@ -1,5 +1,3 @@
-// Types matching backend/src/models/task.model.ts and queue.model.ts
-
 import z from 'zod';
 
 export interface Task {

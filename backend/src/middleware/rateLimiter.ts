@@ -3,10 +3,8 @@ import type { NextFunction, Request, Response } from 'express';
 const windowMs = Number(process.env.RATE_LIMIT_WINDOW_MS) || 60 * 1000;
 const maxRequestsPerWindow = Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100;
 
-// Store request counts per IP
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 
-// Cleanup old entries periodically
 setInterval(() => {
 	const now = Date.now();
 	for (const [ip, data] of requestCounts.entries()) {
@@ -24,7 +22,6 @@ export const createRateLimiter = () => {
 		const clientData = requestCounts.get(ip);
 
 		if (!clientData || now > clientData.resetTime) {
-			// New window
 			requestCounts.set(ip, { count: 1, resetTime: now + windowMs });
 			next();
 			return;
@@ -45,5 +42,4 @@ export const createRateLimiter = () => {
 	};
 };
 
-// Default rate limiter instance
 export const rateLimiter = createRateLimiter();
