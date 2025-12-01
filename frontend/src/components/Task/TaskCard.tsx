@@ -3,6 +3,7 @@ import { memo } from 'react';
 import { animations, colors } from '../../theme/theme';
 import type { CompletedTask, Task } from '../../types/task';
 import { PriorityBadge } from './PriorityBadge';
+import { StatusBadge } from './StatusBadge';
 
 export type TaskStatus = 'queued' | 'processing' | 'completed';
 
@@ -84,6 +85,7 @@ function TaskCardComponent({ task, status = 'queued' }: TaskCardProps) {
 					</Typography>
 				</Box>
 				<Stack direction="row" spacing={1} alignItems="center">
+					<StatusBadge status={status} />
 					<PriorityBadge priority={task.priority} />
 				</Stack>
 			</Box>

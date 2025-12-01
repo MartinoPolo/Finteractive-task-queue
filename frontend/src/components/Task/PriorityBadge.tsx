@@ -1,6 +1,6 @@
-import { Box, Typography } from '@mui/material';
 import { memo } from 'react';
-import { borderRadius, colors, getPriorityColor, getPriorityLabel } from '../../theme/theme';
+import { getPriorityColor, getPriorityLabel } from '../../theme/theme';
+import { Badge } from './Badge';
 
 interface PriorityBadgeProps {
 	priority: number;
@@ -12,23 +12,8 @@ export const PriorityBadge = memo(function PriorityBadge({
 	showLabel = true
 }: PriorityBadgeProps) {
 	const color = getPriorityColor(priority);
-	const label = getPriorityLabel(priority);
+	const priorityLabel = getPriorityLabel(priority);
+	const label = showLabel ? `${priorityLabel} (${priority})` : `Priority: ${priority}`;
 
-	return (
-		<Box
-			sx={{
-				display: 'inline-flex',
-				alignItems: 'center',
-				px: 1.5,
-				py: 0.5,
-				borderRadius: borderRadius.full,
-				backgroundColor: color,
-				color: colors.primary.contrastText
-			}}
-		>
-			<Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.75rem', color: 'inherit' }}>
-				{showLabel ? `${label} (${priority})` : `Priority: ${priority}`}
-			</Typography>
-		</Box>
-	);
+	return <Badge color={color} label={label} />;
 });
