@@ -5,17 +5,20 @@ Express + Socket.IO backend for priority queue simulation with real-time updates
 ## Quick Start
 
 ```bash
-# Install dependencies
 yarn install
-
-# Copy environment file
-cp .env.example .env
-
-# Run development server
 yarn dev
 ```
 
 Server runs at `http://localhost:3000`
+
+## Tech Stack
+
+- **Node.js** with **Express 4** for REST API
+- **Socket.IO 4** for WebSocket real-time updates
+- **TypeScript** with strict mode
+- **Zod** for input validation
+- **Vitest** + **Supertest** for testing
+- **In-memory storage** (no database required)
 
 ## Scripts
 
@@ -46,7 +49,7 @@ Base URL: `/api`
 
 Get all tasks in the queue, sorted by effective priority (base priority + aging bonus).
 
-**Response:**
+**Example Response:**
 
 ```json
 {
@@ -68,7 +71,7 @@ Get all tasks in the queue, sorted by effective priority (base priority + aging 
 
 Add a new task to the queue.
 
-**Request Body:**
+**Example Request Body:**
 
 ```json
 {
