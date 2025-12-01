@@ -218,12 +218,15 @@ export const api = {
 	/**
 	 * GET /api/queue/state - Get complete queue state
 	 */
-	async getQueueState(): Promise<QueueState | undefined> {
+	async getQueueState(): Promise<QueueState> {
 		logger.http('GET', `${API_BASE_URL}/api/queue/state`);
 		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/queue/state`);
 		const response = validateResponse(getQueueStateResponseSchema, rawResponse, 'getQueueState');
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to fetch queue state', 500);
+		}
+		if (!response.data) {
+			throw new ApiError('No queue state data returned', 500);
 		}
 		return response.data;
 	}

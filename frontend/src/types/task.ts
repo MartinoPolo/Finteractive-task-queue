@@ -38,6 +38,8 @@ export type QueueState = z.infer<typeof queueStateSchema>;
 export type TaskProgressUpdate = z.infer<typeof taskProgressUpdateSchema>;
 export type AddTaskInput = z.infer<typeof addTaskSchema>;
 
+export type TaskStatus = 'queued' | 'processing' | 'completed';
+
 export type PriorityLevel = 'high' | 'medium' | 'low';
 
 export const getPriorityLevel = (priority: number): PriorityLevel => {

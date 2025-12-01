@@ -1,26 +1,14 @@
 import { Box, LinearProgress, Paper, Stack, Typography } from '@mui/material';
 import { memo } from 'react';
 import { animations, colors } from '../../theme/theme';
-import type { CompletedTask, Task } from '../../types/task';
+import type { CompletedTask, Task, TaskStatus } from '../../types/task';
+import { formatDate } from '../../utils/date';
 import { PriorityBadge } from './PriorityBadge';
 import { StatusBadge } from './StatusBadge';
-
-export type TaskStatus = 'queued' | 'processing' | 'completed';
 
 interface TaskCardProps {
 	task: Task | CompletedTask;
 	status?: TaskStatus;
-}
-
-function formatDate(dateString: string): string {
-	const date = new Date(dateString);
-	return date.toLocaleString('en-US', {
-		month: 'short',
-		day: 'numeric',
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit'
-	});
 }
 
 function getProgressBarColor(status: TaskStatus): string {

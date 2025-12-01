@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { colors } from '../../theme/theme';
+import type { TaskStatus } from '../../types/task';
 import { Badge } from './Badge';
-import type { TaskStatus } from './TaskCard';
 
 interface StatusBadgeProps {
 	status: TaskStatus;

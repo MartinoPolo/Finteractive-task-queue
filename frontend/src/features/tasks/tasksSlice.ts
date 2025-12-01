@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import {
+	createAsyncThunk,
+	createSelector,
+	createSlice,
+	type PayloadAction
+} from '@reduxjs/toolkit';
 import type { ZodSchema } from 'zod';
 import api from '../../services/api';
 import type { ConnectionStatus } from '../../types/socket';
@@ -204,12 +209,14 @@ export const selectIsClearingCompleted = (state: RootState) => state.tasks.isCle
 export const selectError = (state: RootState) => state.tasks.error;
 export const selectConnectionStatus = (state: RootState) => state.tasks.connectionStatus;
 
-export const selectCurrentTask = (state: RootState) => {
-	const { queue, currentTaskId } = state.tasks;
-	return currentTaskId ? queue.find((task) => task.id === currentTaskId) ?? null : null;
-};
+export const selectCurrentTask = createSelector(
+	[selectQueue, selectCurrentTaskId],
+	(queue, currentTaskId) =>
+		currentTaskId ? queue.find((task) => task.id === currentTaskId) ?? null : null
+);
 
-export const selectPendingTasks = (state: RootState) => {
-	const { queue, currentTaskId } = state.tasks;
-	return currentTaskId ? queue.filter((task) => task.id !== currentTaskId) : queue;
-};
+export const selectPendingTasks = createSelector(
+	[selectQueue, selectCurrentTaskId],
+	(queue, currentTaskId) =>
+		currentTaskId ? queue.filter((task) => task.id !== currentTaskId) : queue
+);

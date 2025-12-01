@@ -4,12 +4,13 @@ import {
 	Box,
 	Button,
 	CircularProgress,
+	FormHelperText,
 	Paper,
 	Stack,
 	TextField,
 	Typography
 } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { useCallback, useId, useState } from 'react';
 import { createTask, selectIsCreatingTask } from '../../features/tasks/tasksSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { colors } from '../../theme/theme';
@@ -29,6 +30,11 @@ export function TaskForm() {
 	const [name, setName] = useState('');
 	const [priority, setPriority] = useState(5);
 	const [formError, setFormError] = useState<string | null>(null);
+
+	// Generate unique IDs for accessibility
+	const nameInputId = useId();
+	const priorityInputId = useId();
+	const errorId = useId();
 
 	const handleSubmit = useCallback(
 		async (e: React.FormEvent) => {
@@ -65,17 +71,17 @@ export function TaskForm() {
 
 	return (
 		<Paper elevation={2} sx={{ p: 3 }}>
-			<Typography variant="h6" sx={{ mb: 2 }}>
+			<Typography variant="h6" component="h2" sx={{ mb: 2 }}>
 				Add New Task
 			</Typography>
 
 			{formError && (
-				<Alert severity="error" sx={{ mb: 2 }}>
+				<Alert severity="error" sx={{ mb: 2 }} role="alert" id={errorId}>
 					{formError}
 				</Alert>
 			)}
 
-			<Box component="form" onSubmit={handleSubmit}>
+			<Box component="form" onSubmit={handleSubmit} aria-label="Add new task form">
 				<Box
 					sx={{
 						display: 'grid',
@@ -85,24 +91,39 @@ export function TaskForm() {
 					}}
 				>
 					<Box>
-						<Typography variant="body2" sx={{ fontWeight: 'fontWeightMedium', mb: 0.5 }}>
+						<Typography
+							component="label"
+							htmlFor={nameInputId}
+							variant="body2"
+							sx={{ fontWeight: 'fontWeightMedium', mb: 0.5, display: 'block' }}
+						>
 							Task Name
 						</Typography>
 						<TextField
+							id={nameInputId}
 							value={name}
 							onChange={handleNameChange}
 							fullWidth
 							size="small"
 							disabled={isCreatingTask}
 							placeholder="Enter task name..."
+							aria-describedby={formError ? errorId : undefined}
+							aria-invalid={!!formError}
+							required
 						/>
 					</Box>
 
 					<Box>
-						<Typography variant="body2" sx={{ fontWeight: 'fontWeightMedium', mb: 0.5 }}>
+						<Typography
+							component="label"
+							htmlFor={priorityInputId}
+							variant="body2"
+							sx={{ fontWeight: 'fontWeightMedium', mb: 0.5, display: 'block' }}
+						>
 							Priority (1-10)
 						</Typography>
 						<TextField
+							id={priorityInputId}
 							type="number"
 							value={priority}
 							onChange={handlePriorityChange}
@@ -110,12 +131,24 @@ export function TaskForm() {
 							size="small"
 							disabled={isCreatingTask}
 							slotProps={{
-								htmlInput: { min: 1, max: 10 }
+								htmlInput: { min: 1, max: 10, 'aria-describedby': `${priorityInputId}-helper` }
 							}}
+							required
 						/>
+						<FormHelperText id={`${priorityInputId}-helper`} sx={{ mx: 0 }}>
+							Higher number = higher priority
+						</FormHelperText>
 					</Box>
 				</Box>
-				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
+				<Stack
+					direction="row"
+					spacing={2}
+					flexWrap="wrap"
+					useFlexGap
+					sx={{ mb: 2 }}
+					role="group"
+					aria-label="Priority legend"
+				>
 					{priorityLegend.map(({ label, color }) => (
 						<Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
 							<Box
@@ -125,6 +158,7 @@ export function TaskForm() {
 									borderRadius: '50%',
 									backgroundColor: color
 								}}
+								aria-hidden="true"
 							/>
 							<Typography variant="caption">{label}</Typography>
 						</Box>
@@ -135,6 +169,7 @@ export function TaskForm() {
 					variant="contained"
 					startIcon={isCreatingTask ? <CircularProgress size={20} color="inherit" /> : <AddIcon />}
 					disabled={isCreatingTask || !name.trim()}
+					aria-busy={isCreatingTask}
 					sx={{
 						px: 3,
 						py: 1,
