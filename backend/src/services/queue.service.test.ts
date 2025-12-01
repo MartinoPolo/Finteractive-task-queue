@@ -67,12 +67,15 @@ describe('Queue Service', () => {
 	});
 
 	describe('getCurrentTask', () => {
-		it('should return highest priority task when not processing', () => {
-			queueService.addTask({ name: 'Low', priority: 1 });
+		it('should return first added task when queue was empty (non-preemptive)', () => {
+			// First task added to empty queue becomes the current processing task
+			const firstTask = queueService.addTask({ name: 'Low', priority: 1 });
 			queueService.addTask({ name: 'High', priority: 10 });
 
 			const current = queueService.getCurrentTask();
-			expect(current?.name).toBe('High');
+			// Non-preemptive: first task keeps processing even if higher priority arrives
+			expect(current?.id).toBe(firstTask.id);
+			expect(current?.name).toBe('Low');
 		});
 
 		it('should return null when queue is empty', () => {
