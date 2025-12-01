@@ -90,11 +90,13 @@ export const addTask = (input: AddTaskInput): Task => {
 	tasks.push(task);
 	broadcast.taskAdded(task);
 
-	// If queue was empty, this task becomes current - broadcast full state update
+	// If queue was empty, this task becomes current
 	if (wasEmpty) {
 		currentProcessingTaskId = task.id;
-		broadcast.queueUpdate(getQueueState());
 	}
+
+	// Always broadcast full queue state so clients get the correct sorted order
+	broadcast.queueUpdate(getQueueState());
 
 	return task;
 };
