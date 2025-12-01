@@ -60,7 +60,7 @@ export function TaskForm() {
 
 	const handlePriorityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = Number(e.target.value) || 1;
-		setPriority(Math.min(50, Math.max(1, value)));
+		setPriority(Math.min(10, Math.max(1, value)));
 	}, []);
 
 	return (
@@ -110,7 +110,7 @@ export function TaskForm() {
 							size="small"
 							disabled={isCreatingTask}
 							slotProps={{
-								htmlInput: { min: 1, max: 50 }
+								htmlInput: { min: 1, max: 10 }
 							}}
 						/>
 					</Box>
