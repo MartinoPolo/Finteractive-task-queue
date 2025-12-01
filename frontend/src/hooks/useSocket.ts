@@ -18,6 +18,7 @@ import {
 	taskSchema
 } from '../types/task';
 import { OPERATION_ERROR_MESSAGES } from '../utils/errorMessages';
+import { logger } from '../utils/logger';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
 
@@ -55,14 +56,15 @@ export function useSocket(): void {
 		socketRef.current = socket;
 
 		socket.on('connect', () => {
-			console.log('Socket connected:', socket.id);
+			logger.ws('←', 'connect', { id: socket.id });
 			reconnectAttemptsRef.current = 0;
 			dispatch(setConnectionStatus('connected'));
+			logger.ws('→', 'join_queue');
 			socket.emit('join_queue');
 		});
 
 		socket.on('disconnect', (reason) => {
-			console.log('Socket disconnected:', reason);
+			logger.ws('←', 'disconnect', { reason });
 			dispatch(setConnectionStatus('disconnected'));
 			// Reconnect if server forced disconnect
 			if (reason === 'io server disconnect') {
@@ -71,7 +73,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('connect_error', (error) => {
-			console.error('Socket connection error:', error.message);
+			logger.error('Socket connection error', error);
 			reconnectAttemptsRef.current++;
 			dispatch(setConnectionStatus('error'));
 			dispatch(
@@ -84,6 +86,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('queue_update', (state) => {
+			logger.ws('←', 'queue_update', { tasks: state.tasks?.length });
 			const validatedPayload = validateSocketPayload(queueStateSchema, state, 'queue_update');
 			if (validatedPayload) {
 				dispatch(syncQueueState(validatedPayload));
@@ -91,6 +94,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('task_progress', (task) => {
+			logger.ws('←', 'task_progress', { id: task.id?.slice(0, 8), progress: task.progress });
 			const validatedPayload = validateSocketPayload(
 				taskProgressUpdateSchema,
 				task,
@@ -104,6 +108,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('task_completed', (task) => {
+			logger.ws('←', 'task_completed', { id: task.id?.slice(0, 8), name: task.name });
 			const validatedPayload = validateSocketPayload(completedTaskSchema, task, 'task_completed');
 			if (validatedPayload) {
 				dispatch(completeTask(validatedPayload));
@@ -111,6 +116,11 @@ export function useSocket(): void {
 		});
 
 		socket.on('task_added', (task) => {
+			logger.ws('←', 'task_added', {
+				id: task.id?.slice(0, 8),
+				name: task.name,
+				priority: task.priority
+			});
 			const validatedPayload = validateSocketPayload(taskSchema, task, 'task_added');
 			if (validatedPayload) {
 				dispatch(addTask(validatedPayload));
@@ -118,7 +128,7 @@ export function useSocket(): void {
 		});
 
 		socket.on('server_shutdown', ({ message }) => {
-			console.warn('Server shutdown:', message);
+			logger.ws('←', 'server_shutdown', { message });
 			dispatch(setError('Server is shutting down. Connection will be lost.'));
 			dispatch(setConnectionStatus('disconnected'));
 		});

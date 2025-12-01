@@ -2,6 +2,7 @@ import type { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import type { QueueState } from '../models/queue.model';
 import type { AddTaskInput, CompletedTask, Task } from '../models/task.model';
+import { logger } from '../utils/logger.js';
 
 let io: Server | null = null;
 let tasks: Task[] = [];
@@ -25,15 +26,23 @@ let config: QueueServiceConfig = {
 
 const broadcast = {
 	queueUpdate: (state: QueueState): void => {
+		logger.ws('→', 'queue_update', { tasks: state.tasks.length });
 		io?.emit('queue_update', state);
 	},
 	taskProgress: (task: Task): void => {
+		logger.ws('→', 'task_progress', { id: task.id.slice(0, 8), progress: task.progress });
 		io?.emit('task_progress', task);
 	},
 	taskCompleted: (task: CompletedTask): void => {
+		logger.ws('→', 'task_completed', { id: task.id.slice(0, 8), name: task.name });
 		io?.emit('task_completed', task);
 	},
 	taskAdded: (task: Task): void => {
+		logger.ws('→', 'task_added', {
+			id: task.id.slice(0, 8),
+			name: task.name,
+			priority: task.priority
+		});
 		io?.emit('task_added', task);
 	}
 };

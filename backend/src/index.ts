@@ -2,6 +2,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { createApp } from './app.js';
 import * as queueService from './services/queue.service.js';
+import { logger } from './utils/logger.js';
 
 const port = process.env.PORT || 3000;
 
@@ -21,18 +22,18 @@ const io = new Server(httpServer, {
 queueService.setSocketServer(io);
 
 io.on('connection', (socket) => {
-	console.log(`Client connected: ${socket.id}`);
+	logger.ws('←', 'connection', { id: socket.id });
 
 	// Client joins queue monitoring
 	socket.on('join_queue', () => {
-		console.log(`Client ${socket.id} joined queue monitoring`);
+		logger.ws('←', 'join_queue', { id: socket.id });
 		// Send current queue state to the client
 		socket.emit('queue_update', queueService.getQueueState());
 	});
 
 	// Handle disconnection
 	socket.on('disconnect', () => {
-		console.log(`Client disconnected: ${socket.id}`);
+		logger.ws('←', 'disconnect', { id: socket.id });
 	});
 });
 
@@ -44,17 +45,17 @@ const gracefulShutdown = (signal: string) => {
 	}
 	isShuttingDown = true;
 
-	console.log(`\nGraceful shutdown initiated (${signal})...`);
+	logger.info(`Graceful shutdown initiated (${signal})`);
 
 	queueService.stopProcessing();
-	console.log('Queue processing stopped');
+	logger.info('Queue processing stopped');
 
 	io.emit('server_shutdown', { message: 'Server is shutting down' });
-	console.log('Shutdown message sent to clients');
+	logger.ws('→', 'server_shutdown');
 
 	// Force close after 10 seconds
 	const forceCloseTimeout = setTimeout(() => {
-		console.log('Force closing...');
+		logger.error('Force closing');
 		process.exit(1);
 	}, 10000);
 
@@ -62,11 +63,11 @@ const gracefulShutdown = (signal: string) => {
 	setTimeout(() => {
 		// Close Socket.IO connections
 		void io.close().then(() => {
-			console.log('Socket.IO connections closed');
+			logger.info('Socket.IO connections closed');
 
 			// Close HTTP server
 			httpServer.close(() => {
-				console.log('HTTP server closed');
+				logger.info('HTTP server closed');
 				clearTimeout(forceCloseTimeout);
 				process.exit(0);
 			});
@@ -84,8 +85,6 @@ if (process.platform === 'win32') {
 }
 
 httpServer.listen(port, () => {
-	console.log(`Server running on http://localhost:${port}`);
-	console.log(`Socket.IO server running on ws://localhost:${port}`);
-
+	logger.info(`Server running on http://localhost:${port}`);
 	queueService.startProcessing();
 });

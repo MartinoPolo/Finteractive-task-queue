@@ -9,6 +9,7 @@ import {
 	type ApiResponse
 } from '../types/api';
 import type { AddTaskInput, CompletedTask, QueueState, Task } from '../types/task';
+import { logger } from '../utils/logger';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -151,6 +152,7 @@ export const api = {
 	 * GET /api/tasks - Get all tasks in queue
 	 */
 	async getTasks(): Promise<Task[]> {
+		logger.http('GET', `${API_BASE_URL}/api/tasks`);
 		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks`);
 		const response = validateResponse(getTasksResponseSchema, rawResponse, 'getTasks');
 		if (!response.success) {
@@ -163,6 +165,7 @@ export const api = {
 	 * POST /api/tasks - Add new task to queue
 	 */
 	async addTask(input: AddTaskInput): Promise<Task> {
+		logger.http('POST', `${API_BASE_URL}/api/tasks`, input);
 		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks`, {
 			method: 'POST',
 			body: JSON.stringify(input)
@@ -181,6 +184,7 @@ export const api = {
 	 * GET /api/tasks/completed - Get completed tasks
 	 */
 	async getCompletedTasks(): Promise<CompletedTask[]> {
+		logger.http('GET', `${API_BASE_URL}/api/tasks/completed`);
 		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks/completed`);
 		const response = validateResponse(
 			getCompletedTasksResponseSchema,
@@ -197,6 +201,7 @@ export const api = {
 	 * DELETE /api/tasks/completed - Clear completed tasks
 	 */
 	async clearCompletedTasks(): Promise<void> {
+		logger.http('DELETE', `${API_BASE_URL}/api/tasks/completed`);
 		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks/completed`, {
 			method: 'DELETE'
 		});
@@ -214,6 +219,7 @@ export const api = {
 	 * GET /api/queue/state - Get complete queue state
 	 */
 	async getQueueState(): Promise<QueueState | undefined> {
+		logger.http('GET', `${API_BASE_URL}/api/queue/state`);
 		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/queue/state`);
 		const response = validateResponse(getQueueStateResponseSchema, rawResponse, 'getQueueState');
 		if (!response.success) {
