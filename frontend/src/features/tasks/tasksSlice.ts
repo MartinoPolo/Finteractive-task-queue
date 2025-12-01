@@ -1,7 +1,18 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { ZodSchema } from 'zod';
 import api from '../../services/api';
 import type { ConnectionStatus } from '../../types/socket';
-import type { AddTaskInput, CompletedTask, QueueState, Task } from '../../types/task';
+import {
+	completedTaskSchema,
+	queueStateSchema,
+	taskProgressUpdateSchema,
+	taskSchema,
+	type AddTaskInput,
+	type CompletedTask,
+	type QueueState,
+	type Task,
+	type TaskProgressUpdate
+} from '../../types/task';
 import { getUserFriendlyErrorMessage } from '../../utils/errorMessages';
 
 export interface TasksState {
@@ -22,6 +33,19 @@ const initialState: TasksState = {
 	isClearingCompleted: false,
 	error: null,
 	connectionStatus: 'disconnected'
+};
+
+/**
+ * Validates reducer payload and logs errors if validation fails.
+ * This is a defense-in-depth measure - primary validation happens at API/socket layer.
+ */
+const validatePayload = <T>(schema: ZodSchema<T>, data: unknown, context: string): T | null => {
+	const result = schema.safeParse(data);
+	if (!result.success) {
+		console.error(`Reducer payload validation failed [${context}]:`, result.error.issues);
+		return null;
+	}
+	return result.data;
 };
 
 const resolveCurrentTaskId = (tasks: Task[], currentTaskId: string | null): string | null => {
@@ -70,33 +94,53 @@ const tasksSlice = createSlice({
 	reducers: {
 		// Sync full queue state from socket
 		syncQueueState: (state, action: PayloadAction<QueueState>) => {
-			const { tasks, completedTasks, currentTaskId } = action.payload;
+			const validated = validatePayload(queueStateSchema, action.payload, 'syncQueueState');
+			if (!validated) {
+				return;
+			}
+			const { tasks, completedTasks, currentTaskId } = validated;
 			state.queue = tasks;
 			state.completed = completedTasks;
 			state.currentTaskId = resolveCurrentTaskId(tasks, currentTaskId);
 		},
 		addTask: (state, action: PayloadAction<Task>) => {
+			const validated = validatePayload(taskSchema, action.payload, 'addTask');
+			if (!validated) {
+				return;
+			}
 			// Only add if not already in queue (prevent duplicates from socket)
-			if (!state.queue.some((t) => t.id === action.payload.id)) {
-				state.queue.push(action.payload);
+			if (!state.queue.some((t) => t.id === validated.id)) {
+				state.queue.push(validated);
 			}
 		},
-		updateTaskProgress: (state, action: PayloadAction<{ id: string; progress: number }>) => {
-			const { id, progress } = action.payload;
+		updateTaskProgress: (state, action: PayloadAction<TaskProgressUpdate>) => {
+			const validated = validatePayload(
+				taskProgressUpdateSchema,
+				action.payload,
+				'updateTaskProgress'
+			);
+			if (!validated) {
+				return;
+			}
+			const { id, progress } = validated;
 			const task = state.queue.find((t) => t.id === id);
 			if (task) {
 				task.progress = progress;
 			}
 		},
 		completeTask: (state, action: PayloadAction<CompletedTask>) => {
-			const completedId = action.payload.id;
+			const validated = validatePayload(completedTaskSchema, action.payload, 'completeTask');
+			if (!validated) {
+				return;
+			}
+			const completedId = validated.id;
 			state.queue = state.queue.filter((t) => t.id !== completedId);
 			if (state.currentTaskId === completedId) {
 				state.currentTaskId = state.queue[0]?.id ?? null;
 			}
 			// Only add if not already completed (prevent duplicates from socket)
 			if (!state.completed.some((t) => t.id === completedId)) {
-				state.completed.unshift(action.payload);
+				state.completed.unshift(validated);
 			}
 		},
 		setError: (state, action: PayloadAction<string | null>) => {

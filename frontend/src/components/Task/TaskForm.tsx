@@ -28,21 +28,17 @@ export function TaskForm() {
 
 	const [name, setName] = useState('');
 	const [priority, setPriority] = useState(5);
-	const [nameError, setNameError] = useState<string | null>(null);
-	const [submitError, setSubmitError] = useState<string | null>(null);
+	const [formError, setFormError] = useState<string | null>(null);
 
 	const handleSubmit = useCallback(
 		async (e: React.FormEvent) => {
 			e.preventDefault();
-			setNameError(null);
-			setSubmitError(null);
+			setFormError(null);
 
 			const result = addTaskSchema.safeParse({ name, priority });
 			if (!result.success) {
-				const nameIssue = result.error.issues.find((i) => i.path[0] === 'name');
-				if (nameIssue) {
-					setNameError(nameIssue.message);
-				}
+				const messages = result.error.issues.map((issue) => issue.message);
+				setFormError(messages.join('. '));
 				return;
 			}
 
@@ -51,7 +47,7 @@ export function TaskForm() {
 				setName('');
 				setPriority(5);
 			} catch {
-				setSubmitError('Failed to add task. Please try again.');
+				setFormError('Failed to add task. Please try again.');
 			}
 		},
 		[name, priority, dispatch]
@@ -59,12 +55,12 @@ export function TaskForm() {
 
 	const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		setName(e.target.value);
-		setNameError(null);
+		setFormError(null);
 	}, []);
 
 	const handlePriorityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = Number(e.target.value) || 1;
-		setPriority(Math.min(10, Math.max(1, value)));
+		setPriority(Math.min(50, Math.max(1, value)));
 	}, []);
 
 	return (
@@ -73,9 +69,9 @@ export function TaskForm() {
 				Add New Task
 			</Typography>
 
-			{submitError && (
+			{formError && (
 				<Alert severity="error" sx={{ mb: 2 }}>
-					{submitError}
+					{formError}
 				</Alert>
 			)}
 
@@ -95,8 +91,6 @@ export function TaskForm() {
 						<TextField
 							value={name}
 							onChange={handleNameChange}
-							error={!!nameError}
-							helperText={nameError}
 							fullWidth
 							size="small"
 							disabled={isCreatingTask}
@@ -116,12 +110,11 @@ export function TaskForm() {
 							size="small"
 							disabled={isCreatingTask}
 							slotProps={{
-								htmlInput: { min: 1, max: 10 }
+								htmlInput: { min: 1, max: 50 }
 							}}
 						/>
 					</Box>
 				</Box>
-
 				<Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
 					{priorityLegend.map(({ label, color }) => (
 						<Box key={label} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -137,7 +130,6 @@ export function TaskForm() {
 						</Box>
 					))}
 				</Stack>
-
 				<Button
 					type="submit"
 					variant="contained"

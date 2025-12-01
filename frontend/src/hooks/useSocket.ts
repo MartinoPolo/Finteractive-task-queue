@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { io, type Socket } from 'socket.io-client';
+import type { ZodSchema } from 'zod';
 import {
 	addTask,
 	completeTask,
@@ -10,6 +11,12 @@ import {
 } from '../features/tasks/tasksSlice';
 import { useAppDispatch } from '../store/hooks';
 import type { ClientToServerEvents, ServerToClientEvents } from '../types/socket';
+import {
+	completedTaskSchema,
+	queueStateSchema,
+	taskProgressUpdateSchema,
+	taskSchema
+} from '../types/task';
 import { OPERATION_ERROR_MESSAGES } from '../utils/errorMessages';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
@@ -24,6 +31,19 @@ const SOCKET_CONFIG = {
 	timeout: 20000,
 	autoConnect: false
 } as const;
+
+const validateSocketPayload = <T>(
+	schema: ZodSchema<T>,
+	data: unknown,
+	eventName: string
+): T | null => {
+	const result = schema.safeParse(data);
+	if (!result.success) {
+		console.error(`Socket event validation failed [${eventName}]:`, result.error.issues);
+		return null;
+	}
+	return result.data;
+};
 
 export function useSocket(): void {
 	const dispatch = useAppDispatch();
@@ -63,12 +83,40 @@ export function useSocket(): void {
 			);
 		});
 
-		socket.on('queue_update', (state) => dispatch(syncQueueState(state)));
-		socket.on('task_progress', (task) =>
-			dispatch(updateTaskProgress({ id: task.id, progress: task.progress }))
-		);
-		socket.on('task_completed', (task) => dispatch(completeTask(task)));
-		socket.on('task_added', (task) => dispatch(addTask(task)));
+		socket.on('queue_update', (state) => {
+			const validatedPayload = validateSocketPayload(queueStateSchema, state, 'queue_update');
+			if (validatedPayload) {
+				dispatch(syncQueueState(validatedPayload));
+			}
+		});
+
+		socket.on('task_progress', (task) => {
+			const validatedPayload = validateSocketPayload(
+				taskProgressUpdateSchema,
+				task,
+				'task_progress'
+			);
+			if (validatedPayload) {
+				dispatch(
+					updateTaskProgress({ id: validatedPayload.id, progress: validatedPayload.progress })
+				);
+			}
+		});
+
+		socket.on('task_completed', (task) => {
+			const validatedPayload = validateSocketPayload(completedTaskSchema, task, 'task_completed');
+			if (validatedPayload) {
+				dispatch(completeTask(validatedPayload));
+			}
+		});
+
+		socket.on('task_added', (task) => {
+			const validatedPayload = validateSocketPayload(taskSchema, task, 'task_added');
+			if (validatedPayload) {
+				dispatch(addTask(validatedPayload));
+			}
+		});
+
 		socket.on('server_shutdown', ({ message }) => {
 			console.warn('Server shutdown:', message);
 			dispatch(setError('Server is shutting down. Connection will be lost.'));

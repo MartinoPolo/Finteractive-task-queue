@@ -1,22 +1,27 @@
 import z from 'zod';
 
-export interface Task {
-	id: string;
-	name: string;
-	priority: number; // 1-10, higher = more important
-	progress: number; // 0-100 as percents
-	createdAt: string; // ISO date string (Date serialized)
-}
+export const taskSchema = z.object({
+	id: z.string().min(1, 'Task ID is required'),
+	name: z.string().min(1, 'Task name is required'),
+	priority: z.number().int().min(1).max(10),
+	progress: z.number().min(0).max(100),
+	createdAt: z.iso.datetime({ message: 'Invalid createdAt date format' })
+});
 
-export interface CompletedTask extends Task {
-	completedAt: string; // ISO date string
-}
+export const completedTaskSchema = taskSchema.extend({
+	completedAt: z.iso.datetime({ message: 'Invalid completedAt date format' })
+});
 
-export interface QueueState {
-	tasks: Task[];
-	completedTasks: CompletedTask[];
-	currentTaskId: string | null;
-}
+export const queueStateSchema = z.object({
+	tasks: z.array(taskSchema),
+	completedTasks: z.array(completedTaskSchema),
+	currentTaskId: z.string().nullable()
+});
+
+export const taskProgressUpdateSchema = z.object({
+	id: z.string().min(1, 'Task ID is required'),
+	progress: z.number().min(0).max(100)
+});
 
 export const addTaskSchema = z.object({
 	name: z.string().trim().min(1, 'Task name must be a non-empty string'),
@@ -27,6 +32,10 @@ export const addTaskSchema = z.object({
 		.max(10, 'Priority must be at most 10')
 });
 
+export type Task = z.infer<typeof taskSchema>;
+export type CompletedTask = z.infer<typeof completedTaskSchema>;
+export type QueueState = z.infer<typeof queueStateSchema>;
+export type TaskProgressUpdate = z.infer<typeof taskProgressUpdateSchema>;
 export type AddTaskInput = z.infer<typeof addTaskSchema>;
 
 export type PriorityLevel = 'high' | 'medium' | 'low';

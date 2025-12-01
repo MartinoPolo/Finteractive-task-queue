@@ -1,4 +1,13 @@
-import type { CompletedTask, QueueState, Task } from './task';
+import z from 'zod';
+import { completedTaskSchema, queueStateSchema, taskSchema } from './task';
+
+const createApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+	z.object({
+		success: z.boolean(),
+		data: dataSchema.optional(),
+		error: z.string().optional(),
+		message: z.string().optional()
+	});
 
 export interface ApiResponse<T> {
 	success: boolean;
@@ -7,21 +16,26 @@ export interface ApiResponse<T> {
 	message?: string;
 }
 
-export interface GetTasksResponse extends ApiResponse<Task[]> {
-	currentTaskId?: string | null;
-}
-export interface AddTaskResponse extends ApiResponse<Task> {}
-export interface GetCompletedTasksResponse extends ApiResponse<CompletedTask[]> {}
-export interface ClearCompletedResponse extends ApiResponse<void> {
-	message?: string;
-}
-export interface GetQueueStateResponse extends ApiResponse<QueueState> {}
+export const getTasksResponseSchema = createApiResponseSchema(z.array(taskSchema)).extend({
+	currentTaskId: z.string().nullable().optional()
+});
+export type GetTasksResponse = z.infer<typeof getTasksResponseSchema>;
 
-export interface RateLimitErrorResponse {
-	success: false;
-	error: string;
-	retryAfter: number;
-}
+export const addTaskResponseSchema = createApiResponseSchema(taskSchema);
+export type AddTaskResponse = z.infer<typeof addTaskResponseSchema>;
+
+export const getCompletedTasksResponseSchema = createApiResponseSchema(
+	z.array(completedTaskSchema)
+);
+export type GetCompletedTasksResponse = z.infer<typeof getCompletedTasksResponseSchema>;
+
+export const clearCompletedResponseSchema = createApiResponseSchema(z.undefined()).extend({
+	message: z.string().optional()
+});
+export type ClearCompletedResponse = z.infer<typeof clearCompletedResponseSchema>;
+
+export const getQueueStateResponseSchema = createApiResponseSchema(queueStateSchema);
+export type GetQueueStateResponse = z.infer<typeof getQueueStateResponseSchema>;
 
 export class ApiError extends Error {
 	constructor(message: string, public statusCode: number, public retryAfter?: number) {

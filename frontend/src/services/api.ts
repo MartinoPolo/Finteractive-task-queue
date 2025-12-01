@@ -1,13 +1,14 @@
+import type { ZodSchema } from 'zod';
 import {
 	ApiError,
-	type AddTaskResponse,
-	type ApiResponse,
-	type ClearCompletedResponse,
-	type GetCompletedTasksResponse,
-	type GetQueueStateResponse,
-	type GetTasksResponse
+	addTaskResponseSchema,
+	clearCompletedResponseSchema,
+	getCompletedTasksResponseSchema,
+	getQueueStateResponseSchema,
+	getTasksResponseSchema,
+	type ApiResponse
 } from '../types/api';
-import type { AddTaskInput, Task } from '../types/task';
+import type { AddTaskInput, CompletedTask, QueueState, Task } from '../types/task';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -42,6 +43,15 @@ const calculateBackoffDelay = (attempt: number, config: RetryConfig): number => 
 };
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+const validateResponse = <T>(schema: ZodSchema<T>, data: unknown, context: string): T => {
+	const result = schema.safeParse(data);
+	if (!result.success) {
+		console.error(`API response validation failed [${context}]:`, result.error.issues);
+		throw new ApiError(`Invalid response format from ${context}`, 500);
+	}
+	return result.data;
+};
 
 const isRetryableError = (error: unknown): boolean => {
 	if (error instanceof ApiError) {
@@ -85,12 +95,14 @@ const handleErrorResponse = async (response: Response): Promise<never> => {
  * - Exponential backoff with jitter
  * - Respects server's retry-after header for rate limits
  * - Retries only on transient errors (5xx, 429, network failures)
+ *
+ * Returns unknown - callers should validate the response with Zod schemas.
  */
-async function fetchWithRetry<T>(
+async function fetchWithRetry(
 	url: string,
 	options: RequestInit = {},
 	retryConfig: RetryConfig = DEFAULT_RETRY_CONFIG
-): Promise<T> {
+): Promise<unknown> {
 	let lastError: Error | null = null;
 
 	for (let attempt = 0; attempt <= retryConfig.maxRetries; attempt++) {
@@ -111,7 +123,7 @@ async function fetchWithRetry<T>(
 				await handleErrorResponse(response);
 			}
 
-			return (await response.json()) as T;
+			return await response.json();
 		} catch (error) {
 			lastError = error instanceof Error ? error : new Error(String(error));
 
@@ -139,7 +151,8 @@ export const api = {
 	 * GET /api/tasks - Get all tasks in queue
 	 */
 	async getTasks(): Promise<Task[]> {
-		const response = await fetchWithRetry<GetTasksResponse>(`${API_BASE_URL}/api/tasks`);
+		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks`);
+		const response = validateResponse(getTasksResponseSchema, rawResponse, 'getTasks');
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to fetch tasks', 500);
 		}
@@ -150,10 +163,11 @@ export const api = {
 	 * POST /api/tasks - Add new task to queue
 	 */
 	async addTask(input: AddTaskInput): Promise<Task> {
-		const response = await fetchWithRetry<AddTaskResponse>(`${API_BASE_URL}/api/tasks`, {
+		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks`, {
 			method: 'POST',
 			body: JSON.stringify(input)
 		});
+		const response = validateResponse(addTaskResponseSchema, rawResponse, 'addTask');
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to create task', 500);
 		}
@@ -166,9 +180,12 @@ export const api = {
 	/**
 	 * GET /api/tasks/completed - Get completed tasks
 	 */
-	async getCompletedTasks(): Promise<Task[]> {
-		const response = await fetchWithRetry<GetCompletedTasksResponse>(
-			`${API_BASE_URL}/api/tasks/completed`
+	async getCompletedTasks(): Promise<CompletedTask[]> {
+		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks/completed`);
+		const response = validateResponse(
+			getCompletedTasksResponseSchema,
+			rawResponse,
+			'getCompletedTasks'
 		);
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to fetch completed tasks', 500);
@@ -180,11 +197,13 @@ export const api = {
 	 * DELETE /api/tasks/completed - Clear completed tasks
 	 */
 	async clearCompletedTasks(): Promise<void> {
-		const response = await fetchWithRetry<ClearCompletedResponse>(
-			`${API_BASE_URL}/api/tasks/completed`,
-			{
-				method: 'DELETE'
-			}
+		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/tasks/completed`, {
+			method: 'DELETE'
+		});
+		const response = validateResponse(
+			clearCompletedResponseSchema,
+			rawResponse,
+			'clearCompletedTasks'
 		);
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to clear completed tasks', 500);
@@ -194,8 +213,9 @@ export const api = {
 	/**
 	 * GET /api/queue/state - Get complete queue state
 	 */
-	async getQueueState(): Promise<GetQueueStateResponse['data']> {
-		const response = await fetchWithRetry<GetQueueStateResponse>(`${API_BASE_URL}/api/queue/state`);
+	async getQueueState(): Promise<QueueState | undefined> {
+		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/queue/state`);
+		const response = validateResponse(getQueueStateResponseSchema, rawResponse, 'getQueueState');
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to fetch queue state', 500);
 		}
