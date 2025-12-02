@@ -1,5 +1,5 @@
 import z from 'zod';
-import { completedTaskSchema, queueStateSchema, taskSchema } from './task';
+import { completedTaskSchema, taskSchema } from './task';
 
 const createApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
 	z.object({
@@ -29,8 +29,6 @@ export const getCompletedTasksResponseSchema = createApiResponseSchema(
 export const clearCompletedResponseSchema = createApiResponseSchema(z.undefined()).extend({
 	message: z.string().optional()
 });
-
-export const getQueueStateResponseSchema = createApiResponseSchema(queueStateSchema);
 
 export class ApiError extends Error {
 	constructor(message: string, public statusCode: number, public retryAfter?: number) {

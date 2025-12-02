@@ -144,23 +144,6 @@ Clear all completed tasks from history.
 }
 ```
 
-### GET `/queue/state`
-
-Get the complete queue state in a single request.
-
-**Example Response:**
-
-```json
-{
-  "success": true,
-  "data": {
-    "tasks": [...],
-    "completedTasks": [...],
-    "currentTaskId": "550e8400-e29b-41d4-a716-446655440000"
-  }
-}
-```
-
 ## WebSocket Events
 
 Connect to `ws://localhost:3000`

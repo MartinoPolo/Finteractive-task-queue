@@ -61,7 +61,6 @@ The frontend consumes the backend REST API:
 | `POST`   | `/api/tasks`           | Create a new task     |
 | `GET`    | `/api/tasks/completed` | Get completed tasks   |
 | `DELETE` | `/api/tasks/completed` | Clear completed tasks |
-| `GET`    | `/api/queue/state`     | Get full queue state  |
 
 ## WebSocket Events
 

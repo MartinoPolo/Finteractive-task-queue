@@ -4,11 +4,10 @@ import {
 	addTaskResponseSchema,
 	clearCompletedResponseSchema,
 	getCompletedTasksResponseSchema,
-	getQueueStateResponseSchema,
 	getTasksResponseSchema,
 	type ApiResponse
 } from '../types/api';
-import type { AddTaskInput, CompletedTask, QueueState, Task } from '../types/task';
+import type { AddTaskInput, CompletedTask, Task } from '../types/task';
 import { logger } from '../utils/logger';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -213,22 +212,6 @@ export const taskApi = {
 		if (!response.success) {
 			throw new ApiError(response.error || 'Failed to clear completed tasks', 500);
 		}
-	},
-
-	/**
-	 * GET /api/queue/state - Get complete queue state
-	 */
-	async getQueueState(): Promise<QueueState> {
-		logger.http('GET', `${API_BASE_URL}/api/queue/state`);
-		const rawResponse = await fetchWithRetry(`${API_BASE_URL}/api/queue/state`);
-		const response = validateResponse(getQueueStateResponseSchema, rawResponse, 'getQueueState');
-		if (!response.success) {
-			throw new ApiError(response.error || 'Failed to fetch queue state', 500);
-		}
-		if (!response.data) {
-			throw new ApiError('No queue state data returned', 500);
-		}
-		return response.data;
 	}
 };
 

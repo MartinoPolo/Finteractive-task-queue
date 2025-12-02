@@ -102,25 +102,3 @@ export const clearCompletedTasks = (_req: Request, res: Response) => {
 		});
 	}
 };
-
-/**
- * GET /api/queue/state
- * Get complete queue state (tasks, completed, current)
- */
-export const getQueueState = (_req: Request, res: Response): void => {
-	logger.http('GET', '/api/queue/state');
-	try {
-		const state = queueService.getQueueState();
-		logger.httpRes('GET', '/api/queue/state', 200);
-		res.json({
-			success: true,
-			data: state
-		});
-	} catch (error) {
-		logger.error('Error getting queue state', error);
-		res.status(500).json({
-			success: false,
-			error: 'Failed to retrieve queue state'
-		});
-	}
-};

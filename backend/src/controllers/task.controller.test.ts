@@ -104,34 +104,4 @@ describe('Task Controller', () => {
 			expect(verifyRes.body.data).toEqual([]);
 		});
 	});
-
-	describe('GET /api/queue/state', () => {
-		it('should return complete queue state', async () => {
-			// Add a task that will be completed
-			queueService.addTask({ name: 'Completed Task', priority: 5 });
-			queueService.configure({ progressIncrementMin: 100, progressIncrementMax: 100 });
-			queueService.processCurrentTask();
-
-			// Add a task that will remain in the queue
-			queueService.addTask({ name: 'Pending Task', priority: 3 });
-
-			const res = await request(app).get('/api/queue/state');
-
-			expect(res.status).toBe(200);
-			expect(res.body.success).toBe(true);
-
-			// Verify tasks array
-			expect(res.body.data.tasks).toHaveLength(1);
-			expect(res.body.data.tasks[0].name).toBe('Pending Task');
-			expect(res.body.data.tasks[0].priority).toBe(3);
-
-			// Verify completedTasks array
-			expect(res.body.data.completedTasks).toHaveLength(1);
-			expect(res.body.data.completedTasks[0].name).toBe('Completed Task');
-			expect(res.body.data.completedTasks[0].progress).toBe(100);
-
-			// Verify currentTaskId points to the pending task
-			expect(res.body.data.currentTaskId).toBe(res.body.data.tasks[0].id);
-		});
-	});
 });
