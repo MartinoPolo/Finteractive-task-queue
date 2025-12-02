@@ -120,7 +120,7 @@ export const clearCompletedTasks = (): void => {
 	broadcast.queueUpdate(getQueueState());
 };
 
-const processCurrentTask = (): void => {
+export const processCurrentTask = (): void => {
 	if (tasks.length === 0) {
 		currentProcessingTaskId = null;
 		return;

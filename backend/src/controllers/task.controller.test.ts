@@ -51,6 +51,7 @@ describe('Task Controller', () => {
 
 			expect(res.status).toBe(400);
 			expect(res.body.success).toBe(false);
+			expect(res.body.error).toBe('Task name must be a non-empty string');
 		});
 
 		it('should reject priority out of range', async () => {
@@ -58,6 +59,7 @@ describe('Task Controller', () => {
 
 			expect(res.status).toBe(400);
 			expect(res.body.success).toBe(false);
+			expect(res.body.error).toBe('Priority must be at most 10');
 		});
 
 		it('should reject non-integer priority', async () => {
@@ -65,6 +67,7 @@ describe('Task Controller', () => {
 
 			expect(res.status).toBe(400);
 			expect(res.body.success).toBe(false);
+			expect(res.body.error).toBe('Priority must be an integer');
 		});
 	});
 
@@ -79,23 +82,56 @@ describe('Task Controller', () => {
 
 	describe('DELETE /api/tasks/completed', () => {
 		it('should clear completed tasks', async () => {
-			const res = await request(app).delete('/api/tasks/completed');
+			// Add a task and manually complete it by setting progress to 100
+			queueService.addTask({ name: 'Task to complete', priority: 5 });
+			queueService.configure({ progressIncrementMin: 100, progressIncrementMax: 100 });
+			queueService.processCurrentTask();
 
-			expect(res.status).toBe(200);
-			expect(res.body.success).toBe(true);
+			// Verify completed tasks exist
+			const getRes = await request(app).get('/api/tasks/completed');
+			expect(getRes.status).toBe(200);
+			expect(getRes.body.data.length).toBe(1);
+			expect(getRes.body.data[0].name).toBe('Task to complete');
+
+			// Delete completed tasks
+			const deleteRes = await request(app).delete('/api/tasks/completed');
+			expect(deleteRes.status).toBe(200);
+			expect(deleteRes.body.success).toBe(true);
+
+			// Verify completed tasks are cleared
+			const verifyRes = await request(app).get('/api/tasks/completed');
+			expect(verifyRes.status).toBe(200);
+			expect(verifyRes.body.data).toEqual([]);
 		});
 	});
 
 	describe('GET /api/queue/state', () => {
 		it('should return complete queue state', async () => {
-			queueService.addTask({ name: 'Task', priority: 5 });
+			// Add a task that will be completed
+			queueService.addTask({ name: 'Completed Task', priority: 5 });
+			queueService.configure({ progressIncrementMin: 100, progressIncrementMax: 100 });
+			queueService.processCurrentTask();
+
+			// Add a task that will remain in the queue
+			queueService.addTask({ name: 'Pending Task', priority: 3 });
 
 			const res = await request(app).get('/api/queue/state');
 
 			expect(res.status).toBe(200);
-			expect(res.body.data).toHaveProperty('tasks');
-			expect(res.body.data).toHaveProperty('completedTasks');
-			expect(res.body.data).toHaveProperty('currentTaskId');
+			expect(res.body.success).toBe(true);
+
+			// Verify tasks array
+			expect(res.body.data.tasks).toHaveLength(1);
+			expect(res.body.data.tasks[0].name).toBe('Pending Task');
+			expect(res.body.data.tasks[0].priority).toBe(3);
+
+			// Verify completedTasks array
+			expect(res.body.data.completedTasks).toHaveLength(1);
+			expect(res.body.data.completedTasks[0].name).toBe('Completed Task');
+			expect(res.body.data.completedTasks[0].progress).toBe(100);
+
+			// Verify currentTaskId points to the pending task
+			expect(res.body.data.currentTaskId).toBe(res.body.data.tasks[0].id);
 		});
 	});
 });
