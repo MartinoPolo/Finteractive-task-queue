@@ -28,6 +28,7 @@ describe('Rate Limiter', () => {
 
 		limiter(req, res, next);
 
+		// check that request passed through successfully
 		expect(next).toHaveBeenCalled();
 		expect(res.status).not.toHaveBeenCalled();
 	});
