@@ -55,7 +55,7 @@ export function CompletedList() {
 			</Box>
 			<Divider sx={{ mb: 2 }} />
 			{tasks.length > 0 ? (
-				<Box sx={{ maxHeight: { xs: 250, md: 384 }, overflow: 'auto', pr: 0.5 }}>
+				<Box sx={{ overflow: 'auto', pr: 0.5 }}>
 					<Stack spacing={1.5}>
 						{tasks.map((task) => (
 							<TaskCard key={task.id} task={task} status="completed" />

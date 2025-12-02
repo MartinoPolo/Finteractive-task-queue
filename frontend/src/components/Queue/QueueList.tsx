@@ -15,7 +15,7 @@ export function QueueList() {
 			</Box>
 			<Divider sx={{ mb: 2 }} />
 			{pendingTasks.length > 0 ? (
-				<Box sx={{ maxHeight: { xs: 300, md: 400 }, overflow: 'auto', pr: 0.5 }}>
+				<Box sx={{ overflow: 'auto', pr: 0.5 }}>
 					<Stack spacing={1.5}>
 						{pendingTasks.map((task) => (
 							<TaskCard key={task.id} task={task} status="queued" />
