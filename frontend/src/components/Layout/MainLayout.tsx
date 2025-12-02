@@ -27,6 +27,8 @@ export function MainLayout({ children }: MainLayoutProps) {
 			<Container
 				maxWidth="xl"
 				sx={{
+					display: 'flex',
+					flexDirection: 'column',
 					flex: 1,
 					py: { xs: 2, sm: 3 },
 					px: { xs: 2, sm: 3, md: 4 }

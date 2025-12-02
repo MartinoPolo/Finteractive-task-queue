@@ -8,7 +8,7 @@ import { TaskCard } from '../Task/TaskCard';
 export function CurrentTask() {
 	const task = useAppSelector(selectCurrentTask);
 	return (
-		<Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+		<Paper elevation={2} sx={{ p: 3 }}>
 			<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
 				<Box
 					sx={{

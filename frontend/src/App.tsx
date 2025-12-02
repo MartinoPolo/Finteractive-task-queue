@@ -16,7 +16,9 @@ function App() {
 				<TaskForm />
 			</Box>
 
-			<CurrentTask />
+			<Box sx={{ mb: 4 }}>
+				<CurrentTask />
+			</Box>
 
 			<Grid container spacing={3}>
 				<Grid size={{ xs: 12, lg: 6 }}>
