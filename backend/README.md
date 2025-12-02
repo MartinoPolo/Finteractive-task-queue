@@ -22,12 +22,15 @@ Server runs at `http://localhost:3000`
 
 ## Scripts
 
-| Command          | Description                      |
-| ---------------- | -------------------------------- |
-| `yarn dev`       | Start dev server with hot reload |
-| `yarn build`     | Compile TypeScript               |
-| `yarn start`     | Run production build             |
-| `yarn test:unit` | Run unit tests once              |
+| Command             | Description                      |
+| ------------------- | -------------------------------- |
+| `yarn dev`          | Start dev server with hot reload |
+| `yarn build`        | Compile TypeScript               |
+| `yarn start`        | Run production build             |
+| `yarn test:unit`    | Run unit tests once              |
+| `yarn lint`         | Run ESLint                       |
+| `yarn typecheck`    | Run TypeScript type checks       |
+| `yarn docker:build` | Build Docker image               |
 
 ## Environment Variables
 
@@ -215,9 +218,6 @@ Emitted when the server is gracefully shutting down.
 ## Docker
 
 ```bash
-# Build and run with docker-compose
-yarn docker:up
-
-# Stop
-yarn docker:down
+# Build Docker image
+yarn docker:build
 ```

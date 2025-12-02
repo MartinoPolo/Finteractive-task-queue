@@ -34,14 +34,16 @@ App runs at `http://localhost:5173`
 
 ## Scripts
 
-| Command          | Description                |
-| ---------------- | -------------------------- |
-| `yarn dev`       | Start dev server           |
-| `yarn build`     | Build for production       |
-| `yarn preview`   | Preview production build   |
-| `yarn test:unit` | Run unit tests             |
-| `yarn lint`      | Run ESLint                 |
-| `yarn typecheck` | Run TypeScript type checks |
+| Command             | Description                |
+| ------------------- | -------------------------- |
+| `yarn dev`          | Start dev server           |
+| `yarn build`        | Build for production       |
+| `yarn preview`      | Preview production build   |
+| `yarn test:unit`    | Run unit tests             |
+| `yarn test:watch`   | Run tests in watch mode    |
+| `yarn lint`         | Run ESLint                 |
+| `yarn typecheck`    | Run TypeScript type checks |
+| `yarn docker:build` | Build Docker image         |
 
 ## Environment Variables
 

@@ -12,9 +12,7 @@
 		"lint": "eslint src/**/*.ts",
 		"typecheck": "tsc --noEmit",
 		"test:unit": "vitest run",
-		"docker:build": "docker build -t task-queue-backend .",
-		"docker:up": "docker compose -f ../docker-compose.yml up --build",
-		"docker:down": "docker compose -f ../docker-compose.yml down"
+		"docker:build": "docker build -t task-queue-backend ."
 	},
 	"dependencies": {
 		"cors": "^2.8.5",

@@ -2,9 +2,10 @@
 	"extends": "../tsconfig.json",
 	"compilerOptions": {
 		"lib": ["ES2020"],
+		"rootDir": "./src",
 		"outDir": "./dist",
 		"noEmit": false
 	},
-	"include": ["src/**/*", "vitest.config.ts"],
+	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]
 }

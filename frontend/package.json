@@ -13,7 +13,7 @@
 		"typecheck": "tsc --noEmit",
 		"test:unit": "vitest run",
 		"test:watch": "vitest",
-		"docker": "docker build -t task-queue-frontend . && docker run -p 5173:5173 task-queue-frontend"
+		"docker:build": "docker build -t task-queue-frontend ."
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",

@@ -41,17 +41,18 @@ yarn dev
 
 ## Scripts
 
-| Command             | Description               |
-| ------------------- | ------------------------- |
-| `yarn dev`          | Run backend + frontend    |
-| `yarn dev:backend`  | Run backend only          |
-| `yarn dev:frontend` | Run frontend only         |
-| `yarn build`        | Build all packages        |
-| `yarn test`         | Run all tests             |
-| `yarn lint`         | Lint all packages         |
-| `yarn typecheck`    | Type check all packages   |
-| `yarn docker:build` | Build and run with Docker |
-| `yarn docker:down`  | Stop Docker containers    |
+| Command             | Description                   |
+| ------------------- | ----------------------------- |
+| `yarn dev`          | Run backend + frontend        |
+| `yarn dev:backend`  | Run backend only              |
+| `yarn dev:frontend` | Run frontend only             |
+| `yarn build`        | Build all packages            |
+| `yarn test`         | Run all tests                 |
+| `yarn lint`         | Lint all packages             |
+| `yarn typecheck`    | Type check all packages       |
+| `yarn docker`       | Run with Docker               |
+| `yarn docker:build` | Build and run with Docker     |
+| `yarn docker:down`  | Stop Docker containers        |
 
 ## API Overview
 
