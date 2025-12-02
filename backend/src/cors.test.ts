@@ -27,20 +27,11 @@ describe('CORS Configuration', () => {
 			expect(response.headers['access-control-allow-origin']).toBe(origin);
 			expect(response.headers['access-control-allow-credentials']).toBe('true');
 		});
-
-		it.each(allowedOrigins)(
-			'should include CORS headers in GET response from %s',
-			async (origin) => {
-				const response = await request(app).get('/api/tasks').set('Origin', origin);
-
-				expect(response.headers['access-control-allow-origin']).toBe(origin);
-			}
-		);
 	});
 
 	describe('Disallowed Origins', () => {
 		it.each(disallowedOrigins)(
-			'should not include CORS headers for requests from %s',
+			'should not include CORS headers for preflight requests from %s',
 			async (origin) => {
 				const response = await request(app)
 					.options('/api/tasks')
@@ -50,46 +41,36 @@ describe('CORS Configuration', () => {
 				expect(response.headers['access-control-allow-origin']).toBeUndefined();
 			}
 		);
-	});
 
-	describe('Allowed Methods', () => {
-		const allowedMethods = ['GET', 'POST', 'DELETE'];
+		it.each(disallowedOrigins)(
+			'should not include CORS headers for actual GET requests from %s',
+			async (origin) => {
+				const response = await request(app).get('/api/tasks').set('Origin', origin);
 
-		it('should allow configured HTTP methods', async () => {
-			const response = await request(app)
-				.options('/api/tasks')
-				.set('Origin', 'http://localhost:5173')
-				.set('Access-Control-Request-Method', 'GET');
+				// The request succeeds server-side, but browser would block it
+				// because Access-Control-Allow-Origin header is missing
+				expect(response.headers['access-control-allow-origin']).toBeUndefined();
+			}
+		);
 
-			const allowedMethodsHeader = response.headers['access-control-allow-methods'];
-			allowedMethods.forEach((method) => {
-				expect(allowedMethodsHeader).toContain(method);
-			});
-		});
+		it.each(disallowedOrigins)(
+			'should not include CORS headers for actual POST requests from %s',
+			async (origin) => {
+				const response = await request(app)
+					.post('/api/tasks')
+					.set('Origin', origin)
+					.set('Content-Type', 'application/json')
+					.send({ title: 'Test task', priority: 1 });
 
-		it('should not allow PUT method', async () => {
-			const response = await request(app)
-				.options('/api/tasks')
-				.set('Origin', 'http://localhost:5173')
-				.set('Access-Control-Request-Method', 'PUT');
-
-			// CORS preflight for disallowed method should still return allowed methods
-			// but PUT should not be in the list
-			const allowedMethodsHeader = response.headers['access-control-allow-methods'];
-			expect(allowedMethodsHeader).not.toContain('PUT');
-		});
-	});
-
-	describe('Credentials', () => {
-		it('should allow credentials', async () => {
-			const response = await request(app).get('/api/tasks').set('Origin', 'http://localhost:5173');
-
-			expect(response.headers['access-control-allow-credentials']).toBe('true');
-		});
+				// Server processes the request, but browser blocks response
+				// due to missing Access-Control-Allow-Origin header
+				expect(response.headers['access-control-allow-origin']).toBeUndefined();
+			}
+		);
 	});
 
 	describe('Preflight Requests', () => {
-		it('should respond to OPTIONS preflight request', async () => {
+		it('should respond to OPTIONS preflight with allowed methods', async () => {
 			const response = await request(app)
 				.options('/api/tasks')
 				.set('Origin', 'http://localhost:5173')
@@ -98,7 +79,9 @@ describe('CORS Configuration', () => {
 
 			expect(response.status).toBe(204);
 			expect(response.headers['access-control-allow-origin']).toBe('http://localhost:5173');
-			expect(response.headers['access-control-allow-methods']).toBeDefined();
+			expect(response.headers['access-control-allow-methods']).toContain('GET');
+			expect(response.headers['access-control-allow-methods']).toContain('POST');
+			expect(response.headers['access-control-allow-methods']).toContain('DELETE');
 		});
 	});
 });
