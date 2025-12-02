@@ -8,7 +8,6 @@ export interface ServerToClientEvents {
 	queue_update: (state: QueueState) => void;
 	task_progress: (task: Task) => void;
 	task_completed: (task: CompletedTask) => void;
-	task_added: (task: Task) => void;
 	server_shutdown: (data: { message: string }) => void;
 }
 

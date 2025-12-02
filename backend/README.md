@@ -189,20 +189,6 @@ Emitted when client joins or when major queue changes occur. Contains the full q
 }
 ```
 
-#### `task_added`
-
-Emitted when a new task is added to the queue.
-
-```typescript
-{
-	id: string;
-	name: string;
-	priority: number; // 1-10
-	progress: number; // Always 0 for new tasks
-	createdAt: string; // ISO timestamp
-}
-```
-
 #### `task_progress`
 
 Emitted periodically while a task is being processed.

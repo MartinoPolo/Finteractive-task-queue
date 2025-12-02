@@ -71,8 +71,7 @@ The frontend consumes the backend REST API:
 
 ### Server → Client
 
-- `queue_update` - Full queue state sync
-- `task_added` - New task added
+- `queue_update` - Full queue state sync (also sent when task is added)
 - `task_progress` - Task progress update
 - `task_completed` - Task finished
 - `server_shutdown` - Server shutting down

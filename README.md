@@ -69,7 +69,6 @@ yarn dev
 | ---------------- | --------- | -------------------- |
 | `join_queue`     | → Server  | Subscribe to updates |
 | `queue_update`   | ← Server  | Full queue state     |
-| `task_added`     | ← Server  | New task created     |
 | `task_progress`  | ← Server  | Task progress update |
 | `task_completed` | ← Server  | Task finished        |
 

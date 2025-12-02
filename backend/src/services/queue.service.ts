@@ -36,14 +36,6 @@ const broadcast = {
 	taskCompleted: (task: CompletedTask): void => {
 		logger.ws('→', 'task_completed', { id: task.id.slice(0, 8), name: task.name });
 		io?.emit('task_completed', task);
-	},
-	taskAdded: (task: Task): void => {
-		logger.ws('→', 'task_added', {
-			id: task.id.slice(0, 8),
-			name: task.name,
-			priority: task.priority
-		});
-		io?.emit('task_added', task);
 	}
 };
 
@@ -88,7 +80,6 @@ export const addTask = (input: AddTaskInput): Task => {
 
 	const wasEmpty = tasks.length === 0;
 	tasks.push(task);
-	broadcast.taskAdded(task);
 
 	// If queue was empty, this task becomes current
 	if (wasEmpty) {

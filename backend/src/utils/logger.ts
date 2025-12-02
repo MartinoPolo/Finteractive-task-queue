@@ -80,7 +80,7 @@ export const logger = {
 
 	/**
 	 * Log WebSocket event
-	 * @example logger.ws('→', 'task_added', { id: '123' }) // outgoing
+	 * @example logger.ws('→', 'task_completed', { id: '123' }) // outgoing
 	 * @example logger.ws('←', 'join_queue') // incoming
 	 */
 	ws: (direction: '→' | '←', event: string, payload?: unknown): void => {

@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import type { ZodSchema } from 'zod';
 import {
-	addTask,
 	clearSocketConnectionError,
 	completeTask,
 	setConnectionStatus,
@@ -13,12 +12,7 @@ import {
 } from '../features/tasks/tasksSlice';
 import { useAppDispatch } from '../store/hooks';
 import type { ClientToServerEvents, ServerToClientEvents } from '../types/socket';
-import {
-	completedTaskSchema,
-	queueStateSchema,
-	taskProgressUpdateSchema,
-	taskSchema
-} from '../types/task';
+import { completedTaskSchema, queueStateSchema, taskProgressUpdateSchema } from '../types/task';
 import { OPERATION_ERROR_MESSAGES } from '../utils/errorMessages';
 import { logger } from '../utils/logger';
 
@@ -115,18 +109,6 @@ export function useSocket(): void {
 			const validatedPayload = validateSocketPayload(completedTaskSchema, task, 'task_completed');
 			if (validatedPayload) {
 				dispatch(completeTask(validatedPayload));
-			}
-		});
-
-		socket.on('task_added', (task) => {
-			logger.ws('←', 'task_added', {
-				id: task.id.slice(0, 8),
-				name: task.name,
-				priority: task.priority
-			});
-			const validatedPayload = validateSocketPayload(taskSchema, task, 'task_added');
-			if (validatedPayload) {
-				dispatch(addTask(validatedPayload));
 			}
 		});
 
