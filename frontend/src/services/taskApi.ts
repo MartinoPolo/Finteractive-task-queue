@@ -147,7 +147,7 @@ async function fetchWithRetry(
 	throw lastError ?? new Error('Unknown error');
 }
 
-export const api = {
+export const taskApi = {
 	/**
 	 * GET /api/tasks - Get all tasks in queue
 	 */
@@ -232,4 +232,4 @@ export const api = {
 	}
 };
 
-export default api;
+export default taskApi;

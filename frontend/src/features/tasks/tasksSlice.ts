@@ -5,7 +5,7 @@ import {
 	type PayloadAction
 } from '@reduxjs/toolkit';
 import type { ZodSchema } from 'zod';
-import api from '../../services/api';
+import taskApi from '../../services/taskApi';
 import type { ConnectionStatus } from '../../types/socket';
 import {
 	completedTaskSchema,
@@ -69,7 +69,7 @@ export const createTask = createAsyncThunk(
 	'tasks/createTask',
 	async (input: AddTaskInput, { rejectWithValue }) => {
 		try {
-			const task = await api.addTask(input);
+			const task = await taskApi.addTask(input);
 			return task;
 		} catch (error) {
 			const message = getUserFriendlyErrorMessage(error, 'createTask');
@@ -85,7 +85,7 @@ export const clearCompletedTasks = createAsyncThunk(
 	'tasks/clearCompletedTasks',
 	async (_, { rejectWithValue }) => {
 		try {
-			await api.clearCompletedTasks();
+			await taskApi.clearCompletedTasks();
 		} catch (error) {
 			const message = getUserFriendlyErrorMessage(error, 'clearCompleted');
 			return rejectWithValue(message);

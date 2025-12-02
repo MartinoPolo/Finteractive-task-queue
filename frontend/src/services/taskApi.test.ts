@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../types/api';
-import api from './api';
+import taskApi from './taskApi';
 
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-describe('api service', () => {
+describe('taskApi service', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.useFakeTimers();
@@ -41,7 +41,7 @@ describe('api service', () => {
 			];
 			mockFetch.mockResolvedValueOnce(createSuccessResponse(tasks));
 
-			const result = await api.getTasks();
+			const result = await taskApi.getTasks();
 
 			expect(result).toEqual(tasks);
 			expect(mockFetch).toHaveBeenCalledWith(
@@ -54,7 +54,7 @@ describe('api service', () => {
 			// 400 errors are not retryable, so this throws immediately
 			mockFetch.mockResolvedValueOnce(createErrorResponse(400, 'Bad Request'));
 
-			await expect(api.getTasks()).rejects.toThrow(ApiError);
+			await expect(taskApi.getTasks()).rejects.toThrow(ApiError);
 		});
 	});
 
@@ -69,7 +69,7 @@ describe('api service', () => {
 			};
 			mockFetch.mockResolvedValueOnce(createSuccessResponse(newTask));
 
-			const result = await api.addTask({ name: 'New Task', priority: 5 });
+			const result = await taskApi.addTask({ name: 'New Task', priority: 5 });
 
 			expect(result).toEqual(newTask);
 			expect(mockFetch).toHaveBeenCalledWith(
@@ -90,7 +90,7 @@ describe('api service', () => {
 				json: () => Promise.resolve({ success: true })
 			});
 
-			await api.clearCompletedTasks();
+			await taskApi.clearCompletedTasks();
 
 			expect(mockFetch).toHaveBeenCalledWith(
 				expect.stringContaining('/api/tasks/completed'),
@@ -107,7 +107,7 @@ describe('api service', () => {
 				json: () => Promise.resolve({ invalid: 'response' })
 			});
 
-			await expect(api.getTasks()).rejects.toThrow('Invalid response format');
+			await expect(taskApi.getTasks()).rejects.toThrow('Invalid response format');
 		});
 
 		it('throws on invalid task data in response', async () => {
@@ -118,7 +118,7 @@ describe('api service', () => {
 				json: () => Promise.resolve({ success: true, data: invalidTasks })
 			});
 
-			await expect(api.getTasks()).rejects.toThrow('Invalid response format');
+			await expect(taskApi.getTasks()).rejects.toThrow('Invalid response format');
 		});
 	});
 
@@ -127,7 +127,7 @@ describe('api service', () => {
 			mockFetch.mockResolvedValueOnce(createErrorResponse(404, 'Not Found'));
 
 			try {
-				await api.getTasks();
+				await taskApi.getTasks();
 				expect.fail('Should have thrown');
 			} catch (error) {
 				expect(error).toBeInstanceOf(ApiError);
