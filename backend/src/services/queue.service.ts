@@ -148,8 +148,10 @@ export const processCurrentTask = (): void => {
 		completedTasks.push(completedTask);
 		currentProcessingTaskId = null;
 		broadcast.taskCompleted(completedTask);
-		broadcast.queueUpdate(getQueueState());
 	}
+	// broadcast full queue state after processing step
+	// (keeps queue order updated with aging)
+	broadcast.queueUpdate(getQueueState());
 };
 
 export const startProcessing = (): void => {
