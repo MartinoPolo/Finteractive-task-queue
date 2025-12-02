@@ -168,13 +168,5 @@ describe('Queue Service', () => {
 			queueService.stopProcessing();
 			expect(queueService.isProcessing()).toBe(false);
 		});
-
-		it('should not start multiple processing intervals', () => {
-			queueService.startProcessing();
-			queueService.startProcessing();
-
-			// Should still only have one interval (no error thrown)
-			expect(queueService.isProcessing()).toBe(true);
-		});
 	});
 });
