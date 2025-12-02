@@ -3,11 +3,11 @@ import { io, type Socket } from 'socket.io-client';
 import type { ZodSchema } from 'zod';
 import {
 	addTask,
-	clearConnectionError,
+	clearSocketConnectionError,
 	completeTask,
-	setConnectionError,
 	setConnectionStatus,
 	setError,
+	setSocketConnectionError,
 	syncQueueState,
 	updateTaskProgress
 } from '../features/tasks/tasksSlice';
@@ -61,7 +61,7 @@ export function useSocket(): void {
 			logger.ws('←', 'connect', { id: socket.id });
 			reconnectAttemptsRef.current = 0;
 			dispatch(setConnectionStatus('connected'));
-			dispatch(clearConnectionError());
+			dispatch(clearSocketConnectionError());
 			logger.ws('→', 'join_queue');
 			socket.emit('join_queue');
 		});
@@ -80,7 +80,7 @@ export function useSocket(): void {
 			reconnectAttemptsRef.current++;
 			dispatch(setConnectionStatus('error'));
 			dispatch(
-				setConnectionError(
+				setSocketConnectionError(
 					reconnectAttemptsRef.current >= SOCKET_CONFIG.reconnectionAttempts
 						? OPERATION_ERROR_MESSAGES.socketMaxRetries
 						: OPERATION_ERROR_MESSAGES.socketConnection

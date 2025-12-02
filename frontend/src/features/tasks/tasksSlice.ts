@@ -27,7 +27,7 @@ export interface TasksState {
 	isCreatingTask: boolean;
 	isClearingCompleted: boolean;
 	error: string | null;
-	isConnectionError: boolean;
+	isSocketConnectionError: boolean;
 	connectionStatus: ConnectionStatus;
 }
 
@@ -38,7 +38,7 @@ const initialState: TasksState = {
 	isCreatingTask: false,
 	isClearingCompleted: false,
 	error: null,
-	isConnectionError: false,
+	isSocketConnectionError: false,
 	connectionStatus: 'disconnected'
 };
 
@@ -152,16 +152,16 @@ const tasksSlice = createSlice({
 		},
 		setError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
-			state.isConnectionError = false;
+			state.isSocketConnectionError = false;
 		},
-		setConnectionError: (state, action: PayloadAction<string | null>) => {
+		setSocketConnectionError: (state, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
-			state.isConnectionError = action.payload !== null;
+			state.isSocketConnectionError = action.payload !== null;
 		},
-		clearConnectionError: (state) => {
-			if (state.isConnectionError) {
+		clearSocketConnectionError: (state) => {
+			if (state.isSocketConnectionError) {
 				state.error = null;
-				state.isConnectionError = false;
+				state.isSocketConnectionError = false;
 			}
 		},
 		setConnectionStatus: (state, action: PayloadAction<ConnectionStatus>) => {
@@ -207,8 +207,8 @@ export const {
 	updateTaskProgress,
 	completeTask,
 	setError,
-	setConnectionError,
-	clearConnectionError,
+	setSocketConnectionError,
+	clearSocketConnectionError,
 	setConnectionStatus
 } = tasksSlice.actions;
 

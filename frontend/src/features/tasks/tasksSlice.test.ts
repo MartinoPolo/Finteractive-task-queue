@@ -34,6 +34,7 @@ const getInitialState = (): TasksState => ({
 	isCreatingTask: false,
 	isClearingCompleted: false,
 	error: null,
+	isSocketConnectionError: false,
 	connectionStatus: 'disconnected'
 });
 
