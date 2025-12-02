@@ -6,7 +6,6 @@ import tasksReducer, {
 	completeTask,
 	selectCurrentTask,
 	selectPendingTasks,
-	setConnectionStatus,
 	syncQueueState,
 	type TasksState,
 	updateTaskProgress
@@ -125,22 +124,12 @@ describe('tasksSlice reducers', () => {
 		it('updates currentTaskId to next task when current is completed', () => {
 			const task1 = createTask({ id: 'task-1' });
 			const task2 = createTask({ id: 'task-2' });
-			const completedTask = createCompletedTask({ id: 'task-1' });
+			const completedTask = createCompletedTask(task1);
 			const store = createStore({ queue: [task1, task2], currentTaskId: 'task-1' });
 
 			store.dispatch(completeTask(completedTask));
 
 			expect(store.getState().tasks.currentTaskId).toBe('task-2');
-		});
-	});
-
-	describe('setConnectionStatus', () => {
-		it('updates connection status', () => {
-			const store = createStore();
-
-			store.dispatch(setConnectionStatus('connected'));
-
-			expect(store.getState().tasks.connectionStatus).toBe('connected');
 		});
 	});
 });
@@ -165,7 +154,8 @@ describe('tasksSlice selectors', () => {
 		});
 
 		it('returns null when currentTaskId does not match any task', () => {
-			const store = createStore({ queue: [], currentTaskId: 'nonexistent' });
+			const task = createTask();
+			const store = createStore({ queue: [task], currentTaskId: 'nonexistent' });
 
 			const currentTask = selectCurrentTask(store.getState());
 
