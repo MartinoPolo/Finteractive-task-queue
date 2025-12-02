@@ -39,11 +39,3 @@ export type TaskProgressUpdate = z.infer<typeof taskProgressUpdateSchema>;
 export type AddTaskInput = z.infer<typeof addTaskSchema>;
 
 export type TaskStatus = 'queued' | 'processing' | 'completed';
-
-export type PriorityLevel = 'high' | 'medium' | 'low';
-
-export const PRIORITY_COLORS = {
-	high: '#f44336', // Red
-	medium: '#ff9800', // Orange
-	low: '#4caf50' // Green
-} as const;

@@ -69,14 +69,6 @@ export const borderRadius = {
 	full: 9999
 } as const;
 
-export const spacing = {
-	xs: 1,
-	sm: 2,
-	md: 3,
-	lg: 4,
-	xl: 6
-} as const;
-
 const themeOptions: ThemeOptions = {
 	palette: {
 		mode: 'light',

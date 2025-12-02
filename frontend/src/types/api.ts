@@ -19,23 +19,18 @@ export interface ApiResponse<T> {
 export const getTasksResponseSchema = createApiResponseSchema(z.array(taskSchema)).extend({
 	currentTaskId: z.string().nullable().optional()
 });
-export type GetTasksResponse = z.infer<typeof getTasksResponseSchema>;
 
 export const addTaskResponseSchema = createApiResponseSchema(taskSchema);
-export type AddTaskResponse = z.infer<typeof addTaskResponseSchema>;
 
 export const getCompletedTasksResponseSchema = createApiResponseSchema(
 	z.array(completedTaskSchema)
 );
-export type GetCompletedTasksResponse = z.infer<typeof getCompletedTasksResponseSchema>;
 
 export const clearCompletedResponseSchema = createApiResponseSchema(z.undefined()).extend({
 	message: z.string().optional()
 });
-export type ClearCompletedResponse = z.infer<typeof clearCompletedResponseSchema>;
 
 export const getQueueStateResponseSchema = createApiResponseSchema(queueStateSchema);
-export type GetQueueStateResponse = z.infer<typeof getQueueStateResponseSchema>;
 
 export class ApiError extends Error {
 	constructor(message: string, public statusCode: number, public retryAfter?: number) {

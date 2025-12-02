@@ -13,9 +13,3 @@ export interface ServerToClientEvents {
 }
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
-
-export interface SocketState {
-	status: ConnectionStatus;
-	error: string | null;
-	reconnectAttempts: number;
-}

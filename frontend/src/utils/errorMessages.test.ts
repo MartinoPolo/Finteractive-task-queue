@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ApiError } from '../types/api';
-import {
-	getUserFriendlyErrorMessage,
-	isNetworkError,
-	OPERATION_ERROR_MESSAGES
-} from './errorMessages';
+import { getUserFriendlyErrorMessage, OPERATION_ERROR_MESSAGES } from './errorMessages';
 
 describe('errorMessages', () => {
 	describe('getUserFriendlyErrorMessage', () => {
@@ -92,22 +88,6 @@ describe('errorMessages', () => {
 					'Unable to connect to server. Please check your internet connection.'
 				);
 			});
-		});
-	});
-
-	describe('isNetworkError', () => {
-		it('should detect TypeError with fetch', () => {
-			expect(isNetworkError(new TypeError('Failed to fetch'))).toBe(true);
-		});
-
-		it('should detect network error messages', () => {
-			expect(isNetworkError(new Error('ERR_NETWORK'))).toBe(true);
-			expect(isNetworkError(new Error('ERR_CONNECTION_REFUSED'))).toBe(true);
-		});
-
-		it('should return false for non-network errors', () => {
-			expect(isNetworkError(new Error('Validation failed'))).toBe(false);
-			expect(isNetworkError(new ApiError('Bad request', 400))).toBe(false);
 		});
 	});
 });

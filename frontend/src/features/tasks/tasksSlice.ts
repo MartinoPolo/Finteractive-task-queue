@@ -207,7 +207,6 @@ export const selectCurrentTaskId = (state: RootState) => state.tasks.currentTask
 export const selectIsCreatingTask = (state: RootState) => state.tasks.isCreatingTask;
 export const selectIsClearingCompleted = (state: RootState) => state.tasks.isClearingCompleted;
 export const selectError = (state: RootState) => state.tasks.error;
-export const selectConnectionStatus = (state: RootState) => state.tasks.connectionStatus;
 
 export const selectCurrentTask = createSelector(
 	[selectQueue, selectCurrentTaskId],

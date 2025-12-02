@@ -68,7 +68,7 @@ export const OPERATION_ERROR_MESSAGES = {
 	socketMaxRetries: 'Unable to connect to server. Please refresh the page.'
 } as const;
 
-export type OperationContext = keyof typeof OPERATION_ERROR_MESSAGES;
+type OperationContext = keyof typeof OPERATION_ERROR_MESSAGES;
 
 /**
  * Transforms raw error messages into user-friendly messages.
@@ -121,15 +121,4 @@ function getContextualFallback(context?: OperationContext): string {
 		return OPERATION_ERROR_MESSAGES[context];
 	}
 	return 'An unexpected error occurred. Please try again.';
-}
-
-/**
- * Checks if an error is a network-related error
- */
-export function isNetworkError(error: unknown): boolean {
-	if (error instanceof TypeError && error.message.toLowerCase().includes('fetch')) {
-		return true;
-	}
-	const message = error instanceof Error ? error.message : String(error);
-	return /failed to fetch|network|ERR_NETWORK|ERR_CONNECTION_REFUSED/i.test(message);
 }

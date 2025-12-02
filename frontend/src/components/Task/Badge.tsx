@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { memo } from 'react';
 import { borderRadius, colors } from '../../theme/theme';
 
-export interface BadgeProps {
+interface BadgeProps {
 	color: string;
 	label: string;
 	textColor?: string;

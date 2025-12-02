@@ -142,5 +142,3 @@ export function useSocket(): void {
 		};
 	}, [dispatch]);
 }
-
-export default useSocket;
