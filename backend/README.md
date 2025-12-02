@@ -34,6 +34,7 @@ Server runs at `http://localhost:3000`
 | Variable                  | Default | Description                                                 |
 | ------------------------- | ------- | ----------------------------------------------------------- |
 | `PORT`                    | `3000`  | Server port                                                 |
+| `DEBUG`                   | `false` | Enable debug logging (true/false)                           |
 | `AGING_FACTOR`            | `60`    | Seconds before task gains +1 priority (prevents starvation) |
 | `PROGRESS_INCREMENT_MIN`  | `10`    | Min progress increment per tick                             |
 | `PROGRESS_INCREMENT_MAX`  | `20`    | Max progress increment per tick                             |

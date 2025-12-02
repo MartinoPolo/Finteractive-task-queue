@@ -45,11 +45,12 @@ App runs at `http://localhost:5173`
 
 ## Environment Variables
 
-| Variable       | Default                 | Description     |
-| -------------- | ----------------------- | --------------- |
-| `VITE_API_URL` | `http://localhost:3000` | Backend API URL |
-| `VITE_WS_URL`  | `http://localhost:3000` | WebSocket URL   |
-| `VITE_PORT`    | `5173`                  | Dev server port |
+| Variable       | Default                 | Description                       |
+| -------------- | ----------------------- | --------------------------------- |
+| `VITE_API_URL` | `http://localhost:3000` | Backend API URL                   |
+| `VITE_WS_URL`  | `http://localhost:3000` | WebSocket URL                     |
+| `VITE_PORT`    | `5173`                  | Dev server port                   |
+| `VITE_DEBUG`   | `false`                 | Enable debug logging (true/false) |
 
 ## API Services
 

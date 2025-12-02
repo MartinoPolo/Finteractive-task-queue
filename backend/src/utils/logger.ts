@@ -1,7 +1,13 @@
 /**
  * Minimalistic logging utility for backend network communication.
  * Icon: ⚙️ to distinguish from frontend logs
+ * Logs are only visible when DEBUG=true environment variable is set.
  */
+
+/**
+ * Check if debug mode is enabled via environment variable
+ */
+const isDebugEnabled = (): boolean => process.env.DEBUG === 'true';
 
 type LogType = 'http' | 'ws' | 'info' | 'error';
 
@@ -45,6 +51,10 @@ const getTimestamp = (): string => {
 };
 
 const logWithColor = (type: LogType, message: string, payload?: unknown): void => {
+	if (!isDebugEnabled()) {
+		return;
+	}
+
 	const timestamp = getTimestamp();
 	const typeLabel = TYPE_LABELS[type];
 	const payloadStr = formatPayload(payload);

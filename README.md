@@ -61,7 +61,6 @@ yarn dev
 | `POST`   | `/api/tasks`           | Create task           |
 | `GET`    | `/api/tasks/completed` | Get completed tasks   |
 | `DELETE` | `/api/tasks/completed` | Clear completed tasks |
-| `GET`    | `/api/queue/state`     | Get full queue state  |
 
 ## WebSocket Events
 
